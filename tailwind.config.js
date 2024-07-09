@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: "class",
   content: [
     `./src/pages/**/*.{js,jsx,ts,tsx}`,
     `./src/components/**/*.{js,jsx,ts,tsx}`,
@@ -13,11 +14,7 @@ module.exports = {
       interBold: ["inter-bold"],
     },
     extend: {
-      colors: {
-        "custom-grey-950": "#232323",
-        "custom-grey-50": "#f6f6f6",
-        
-      },
+      colors: {},
     },
   },
   plugins: [],

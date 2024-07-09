@@ -3,10 +3,7 @@ import Footer from "./Footer";
 import { profile } from "../utils/constants";
 
 const Layout = ({ children }: any) => (
-  <div className="bg-custom-grey-950 text-gray-200 flex flex-col min-h-screen">
-    <header className="flex items-center justify-center font-interSemibold	p-6 text-lg	">
-      {profile.userName}
-    </header>
+  <div className="bg-zinc-200 dark:bg-zinc-800 text-fcolor-light dark:text-gray-200 flex flex-col min-h-screen transition duration-700">
     <main className="flex-grow">{children}</main>
     <Footer />
   </div>
