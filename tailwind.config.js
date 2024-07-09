@@ -5,7 +5,20 @@ module.exports = {
     `./src/components/**/*.{js,jsx,ts,tsx}`,
   ],
   theme: {
-    extend: {},
+    fontFamily: {
+      interLight: ["inter-light", "sans-serif"],
+      interSemibold: ["inter-semibold"],
+      interRegular: ["inter-regular"],
+      interMedium: ["inter-medium"],
+      interBold: ["inter-bold"],
+    },
+    extend: {
+      colors: {
+        "custom-grey-950": "#232323",
+        "custom-grey-50": "#f6f6f6",
+        
+      },
+    },
   },
   plugins: [],
-}
+};

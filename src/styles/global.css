@@ -1,3 +1,33 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+  font-family: "inter-light";
+  font-style: normal;
+  src: url(./Inter-Light.ttf) format("ttf");
+}
+
+@font-face {
+  font-family: "inter-medium";
+  font-style: normal;
+  src: url(./Inter-Medium.ttf) format("ttf");
+}
+
+@font-face {
+  font-family: "inter-regular";
+  font-style: normal;
+  src: url(./Inter-Regular.ttf) format("ttf");
+}
+
+@font-face {
+  font-family: "inter-semibold";
+  font-style: normal;
+  src: url(./Inter-SemiBold.ttf) format("ttf");
+}
+
+@font-face {
+  font-family: "inter-bold";
+  font-style: normal;
+  src: url(./Inter-Bold.ttf) format("ttf");
+}
