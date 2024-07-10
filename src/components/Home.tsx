@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { profile } from "../utils/constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSun, faMoon } from "@fortawesome/free-regular-svg-icons";
-import Menu from "./Menu";
 
 const Home = () => {
   const [theme, setTheme] = useState("light");
@@ -33,8 +32,8 @@ const Home = () => {
     }
   };
   return (
-    <div className="flex flex-col md:flex-row flex-grow place-content-evenly">
-      <div className="px-4 max-w-xl mt-4 md:mt-52">
+    <div className="col-span-1 px-4 flex flex-grow flex-col justify-center items-center">
+      <div className="md:ml-24 px-2">
         <div className="font-semibold text-amber-700 dark:text-amber-100 pt-6 transition duration-700">
           Hello <span className="inline-block scale-x-[-1]"> 👋</span>
         </div>
@@ -62,7 +61,6 @@ const Home = () => {
           </button>
         </div>
       </div>
-      <Menu />
     </div>
   );
 };

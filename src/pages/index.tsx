@@ -1,12 +1,12 @@
 import * as React from "react";
 import { type HeadFC, type PageProps } from "gatsby";
 import Layout from "../components/Layout";
-import Home from "../components/Home";
+import Menu from "../components/Menu";
 
 const IndexPage: React.FC<PageProps> = () => {
   return (
     <Layout>
-      <Home />
+      <Menu />
     </Layout>
   );
 };

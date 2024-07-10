@@ -6,8 +6,8 @@ import { navigate } from "gatsby";
 
 const Menu = () => {
   return (
-    <div className="px-4">
-      <div className="mt-8 md:mt-28 text-gray-700 dark:text-gray-300 flex flex-wrap gap-8 max-w-96">
+    <div className="col-span-1 px-4 flex flex-grow flex-col justify-center items-center">
+      <div className="text-gray-700 dark:text-gray-300 flex flex-wrap gap-8 max-w-96">
         <button className="menu-button" onClick={() => navigate("projects")}>
           <FontAwesomeIcon icon={faFolder} size="2x" />
           <div>Projects</div>

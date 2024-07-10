@@ -4,7 +4,7 @@ import Layout from "../components/Layout";
 const Projects = () => {
   return (
     <Layout>
-      <div>
+      <div className="col-span-1">
         <div> Projects</div>
       </div>
     </Layout>
