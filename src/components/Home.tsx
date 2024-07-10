@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { profile } from "../utils/constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSun, faMoon } from "@fortawesome/free-regular-svg-icons";
+import Menu from "./Menu";
 
 const Home = () => {
   const [theme, setTheme] = useState("light");
@@ -32,9 +33,9 @@ const Home = () => {
     }
   };
   return (
-    <div className="flex flex-col md:flex-row flex-grow">
-      <div className="flex-1 max-w-xl mt-4 md:mt-52 ml-4 md:ml-24">
-        <div className=" text-amber-700 dark:text-amber-100 pt-6 transition duration-700">
+    <div className="flex flex-col md:flex-row flex-grow place-content-evenly">
+      <div className="px-4 max-w-xl mt-4 md:mt-52">
+        <div className="font-semibold text-amber-700 dark:text-amber-100 pt-6 transition duration-700">
           Hello <span className="inline-block scale-x-[-1]"> 👋</span>
         </div>
         <div className="font-semibold text-3xl	mt-2">{`I'm ${profile.name}`}</div>
@@ -61,7 +62,7 @@ const Home = () => {
           </button>
         </div>
       </div>
-      <div className="flex-1"> </div>
+      <Menu />
     </div>
   );
 };
