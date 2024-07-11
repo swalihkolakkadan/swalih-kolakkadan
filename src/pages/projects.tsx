@@ -38,7 +38,7 @@ const Projects = () => {
               <div className="mt-1 font-semibold text-lg">{project.name}</div>
               <div id="skills" className="flex gap-2 mt-1">
                 {project.skills.map((skill) => (
-                  <div className=" bg-slate-200 dark:bg-slate-950 py-1 px-3 rounded-full">
+                  <div className=" text-sm bg-zinc-200 dark:bg-zinc-900 py-1 px-3 rounded-full">
                     {skill}
                   </div>
                 ))}
