@@ -2,36 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-  font-family: "inter-light";
-  font-style: normal;
-  src: url(./Inter-Light.ttf) format("ttf");
-}
-
-@font-face {
-  font-family: "inter-medium";
-  font-style: normal;
-  src: url(./Inter-Medium.ttf) format("ttf");
-}
-
-@font-face {
-  font-family: "inter-regular";
-  font-style: normal;
-  src: url(./Inter-Regular.ttf) format("ttf");
-}
-
-@font-face {
-  font-family: "inter-semibold";
-  font-style: normal;
-  src: url(./Inter-SemiBold.ttf) format("ttf");
-}
-
-@font-face {
-  font-family: "inter-bold";
-  font-style: normal;
-  src: url(./Inter-Bold.ttf) format("ttf");
-}
-
 .menu-button {
   @apply w-5/6 p-2 flex md:w-44 md:flex-col items-center justify-center gap-2 md:h-44 border border-gray-800 dark:border-gray-200 rounded-md hover:text-amber-700 dark:hover:text-amber-300 hover:border-amber-700 dark:hover:border-amber-300;
 }

@@ -8,7 +8,7 @@ import React from "react";
 
 const Footer = () => {
   const iConClass =
-    "p-2.5 bg-slate-200 dark:bg-slate-950 backdrop-blur-md rounded-full hover:text-amber-500 transition duration-300";
+    "p-2.5 bg-slate-200 dark:bg-slate-950 backdrop-blur-md rounded-full hover:text-amber-500";
 
   return (
     <footer className="p-6 flex items-center justify-center space-x-4">

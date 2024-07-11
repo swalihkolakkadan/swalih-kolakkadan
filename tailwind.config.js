@@ -15,6 +15,9 @@ module.exports = {
     },
     extend: {
       colors: {},
+      spacing: {
+        "2px": "2px",
+      },
     },
   },
   plugins: [],
