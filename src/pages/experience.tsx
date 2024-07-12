@@ -74,7 +74,7 @@ const Experience = () => {
   return (
     <Layout>
       <div className="px-4 col-span-1 flex items-center">
-        <div className="px-2 flex-grow md:pr-10">
+        <div className="px-2 flex-grow lg:pr-10">
           <Link className="text-amber-700 dark:text-amber-200" to="/">
             <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
             Menu

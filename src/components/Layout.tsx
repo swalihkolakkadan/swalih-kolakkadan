@@ -5,7 +5,7 @@ import Home from "./Home";
 const Layout = ({ children }: any) => {
   return (
     <div className="bg-neutral-300 dark:bg-neutral-800 text-fcolor-light dark:text-gray-200 flex flex-col min-h-screen transition duration-700">
-      <main className="grid grid-cols-1 md:grid-cols-2 gap-2 flex-grow">
+      <main className="grid grid-cols-1 lg:grid-cols-2 gap-2 flex-grow">
         <Home />
         {children}
       </main>

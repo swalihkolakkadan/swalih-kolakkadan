@@ -33,7 +33,7 @@ const Home = () => {
   };
   return (
     <div className="col-span-1 px-4 flex flex-grow flex-col justify-center items-center">
-      <div className="md:ml-24 px-2">
+      <div className="lg:ml-24 px-2">
         <div className="font-semibold text-amber-700 dark:text-amber-100 pt-6 transition duration-700">
           Hello <span className="inline-block scale-x-[-1]"> 👋</span>
         </div>
