@@ -11,7 +11,7 @@ const Footer = () => {
     "p-2.5 bg-zinc-200 dark:bg-zinc-900 backdrop-blur-md rounded-full hover:text-amber-500";
 
   return (
-    <footer className="p-6 flex items-center justify-center space-x-4">
+    <footer className="py-6 flex items-center justify-center space-x-4">
       <a
         href="https://www.linkedin.com/in/swalih-kolakkadan-071611177/"
         target="_blank"

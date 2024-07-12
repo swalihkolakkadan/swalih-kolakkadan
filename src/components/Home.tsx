@@ -32,8 +32,8 @@ const Home = () => {
     }
   };
   return (
-    <div className="col-span-1 px-4 flex flex-grow flex-col justify-center items-center">
-      <div className="lg:ml-24 px-2">
+    <div className="col-span-1 flex flex-grow flex-col justify-center items-center">
+      <div className="lg:ml-24">
         <div className="font-semibold text-amber-700 dark:text-amber-100 pt-6 transition duration-700">
           Hello <span className="inline-block scale-x-[-1]"> 👋</span>
         </div>
@@ -44,7 +44,7 @@ const Home = () => {
             href="https://drive.google.com/file/d/1CoHpjU0Hh8HXJOcqGlRX6AmD6xEwlu7O/view?usp=sharing"
             target="_blank"
           >
-            <button className="bg-amber-600 text-slate-200 dark:bg-amber-200 dark:text-slate-900 w-36 h-12 font-semibold rounded-md px-4 hover:text-amber-200 dark:hover:text-amber-500 transition duration-300">
+            <button className="bg-amber-600 text-slate-200 dark:bg-amber-200 dark:text-slate-900 w-36 h-12 font-semibold rounded-md hover:text-amber-200 dark:hover:text-amber-500 transition duration-300">
               View Resume
             </button>
           </a>

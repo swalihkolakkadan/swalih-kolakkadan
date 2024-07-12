@@ -6,7 +6,7 @@ import { Link } from "gatsby";
 
 const Menu = () => {
   return (
-    <div className="col-span-1 px-4 flex flex-grow flex-col justify-center items-center">
+    <div className="col-span-1 flex flex-grow flex-col justify-center items-center">
       <div className="text-gray-700 dark:text-gray-300 flex flex-wrap gap-8 max-w-96">
         <Link to="/projects" className="menu-button">
           <FontAwesomeIcon icon={faFolder} size="2x" />
