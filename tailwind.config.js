@@ -18,6 +18,9 @@ module.exports = {
       spacing: {
         "2px": "2px",
       },
+      fontFamily: {
+        inter: ["inter"],
+      },
     },
   },
   plugins: [],
