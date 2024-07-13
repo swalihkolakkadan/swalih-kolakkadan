@@ -22,17 +22,6 @@ const Experience = () => {
   const experiences: Experience[] = [
     {
       id: 1,
-      companyName: "MediaOcean",
-      href: "https://www.mediaocean.com/",
-      jobType: "Contractor",
-      description:
-        " Contributed to the development of the Prisma Dashboard, a sophisticated web application for managing campaigns and orders through an integrated workflow, and led the development and maintenance of the Orders Tab. Additionally, optimized the dashboard grid's rendering, resulting in a 40% improvement in loading speed.",
-      roleName: "Frontend Engineer",
-      startDate: new Date(2022, 9),
-      endDate: null,
-    },
-    {
-      id: 2,
       companyName: "Qburst",
       href: "https://www.qburst.com/en-in/",
       jobType: "Full time",
@@ -40,6 +29,17 @@ const Experience = () => {
       startDate: new Date(2024, 1),
       description:
         "In addition to my contract role at Mediaocean through Qburst for product development, I am actively involved in training and mentoring new joiners at QBurst.",
+      endDate: null,
+    },
+    {
+      id: 2,
+      companyName: "MediaOcean (Contract from Qburst)",
+      href: "https://www.mediaocean.com/",
+      jobType: "Contractor",
+      description:
+        " Contributed to the development of the Prisma Dashboard, a sophisticated web application for managing campaigns and orders through an integrated workflow, and led the development and maintenance of the Orders Tab. Additionally, optimized the dashboard grid's rendering, resulting in a 40% improvement in loading speed.",
+      roleName: "Frontend Engineer",
+      startDate: new Date(2022, 9),
       endDate: null,
     },
     {
