@@ -20,9 +20,9 @@ const Menu = () => {
           <FontAwesomeIcon icon={faLayerGroup} size="2x" />
           <div> Stack</div>
         </Link>
-        <Link to="about" className="menu-button">
+        <Link to="/contact" className="menu-button">
           <FontAwesomeIcon icon={faAddressCard} size="2x" />
-          <div> About Me</div>
+          <div> Contact Me</div>
         </Link>
       </div>
     </div>

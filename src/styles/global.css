@@ -7,6 +7,26 @@
   src: url("./Inter-VariableFont_slnt\,wght.ttf") format("truetype");
 }
 
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background: #7d7d7d;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #4b4a4a;
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  transition-duration: 1000ms;
+}
+
 .menu-button {
   @apply w-80 p-2 flex lg:w-44 lg:flex-col items-center justify-center gap-2 lg:h-44 border border-gray-800 dark:border-gray-200 rounded-md hover:text-amber-700 dark:hover:text-amber-300 hover:border-amber-700 dark:hover:border-amber-300;
 }
