@@ -10,6 +10,7 @@ import {
 import profileImage from "../images/prof.jpg";
 import { profile } from "../utils/constants";
 import Card from "../components/Card";
+import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 
 const Contact = () => {
   return (
@@ -26,7 +27,7 @@ const Contact = () => {
                 <div>
                   <img
                     src={profileImage}
-                    className="rounded-full	w-20 h-20"
+                    className="rounded-full	w-20 h-20 shadow-neutral-900"
                   ></img>
                 </div>
                 <div className="pt-2">
@@ -38,7 +39,7 @@ const Contact = () => {
               </div>
               <div className="mt-4 flex gap-3">
                 <button
-                  className="px-8 py-4 bg-neutral-400/75 dark:bg-neutral-700/75 rounded-3xl"
+                  className="px-8 py-4 bg-neutral-400/75 dark:bg-neutral-700/75 rounded-3xl transition duration-300"
                   title="Call"
                   onClick={() => {
                     window.location.href = `tel:${profile.contactNo}`;
@@ -47,13 +48,22 @@ const Contact = () => {
                   <FontAwesomeIcon icon={faPhone} size="lg" />
                 </button>
                 <button
-                  className="px-8 py-4 bg-neutral-400/75 dark:bg-neutral-700/75 rounded-3xl"
+                  className="px-8 py-4 bg-neutral-400/75 dark:bg-neutral-700/75 rounded-3xl transition duration-300"
                   title="Email"
                   onClick={() => {
                     window.location.href = `mailto:swalih723@gmail.com`;
                   }}
                 >
                   <FontAwesomeIcon icon={faEnvelope} size="lg" />
+                </button>
+                <button
+                  className="px-8 py-4 bg-neutral-400/75 dark:bg-neutral-700/75 rounded-3xl transition duration-300"
+                  title="Whatsapp"
+                  onClick={() => {
+                    window.location.href = "https://wa.me/+918592815130";
+                  }}
+                >
+                  <FontAwesomeIcon icon={faWhatsapp} size="xl" />
                 </button>
               </div>
             </div>

@@ -1,4 +1,7 @@
-import React from "react";
+import { faCopy } from "@fortawesome/free-regular-svg-icons";
+import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useState } from "react";
 
 interface ContactCard {
   title: string;
@@ -6,10 +9,39 @@ interface ContactCard {
 }
 
 const Card = ({ title, subtitle }: ContactCard) => {
+  const [isCopied, setIsCopied] = useState(false);
+
   return (
-    <div className="bg-neutral-300 dark:bg-neutral-800 p-4 rounded-2xl shadow-sm dark:shadow-neutral-700/50">
-      <div className="text-sm text-neutral-400">{title}</div>
-      <div className="text-lg">{subtitle}</div>
+    <div
+      className="group bg-neutral-300 dark:bg-neutral-800 p-4 rounded-2xl shadow-sm dark:shadow-neutral-700/50 flex hover:cursor-pointer"
+      onClick={() => {
+        navigator.clipboard.writeText(subtitle);
+        setIsCopied(true);
+        setTimeout(() => {
+          setIsCopied(false);
+        }, 750);
+      }}
+    >
+      <div>
+        <div className="text-sm text-neutral-600 dark:text-neutral-400">
+          {title}
+        </div>
+        <div
+          className={`text-lg ${
+            isCopied ? "text-amber-700 dark:text-amber-500" : ""
+          }`}
+        >
+          {subtitle}
+        </div>
+      </div>
+      <div className="ml-auto flex items-center opacity-0 group-hover:opacity-100 transition duration-300 active:text-sky-400 transition duration-300">
+        <FontAwesomeIcon
+          icon={isCopied ? faCheck : faCopy}
+          size="lg"
+          title="Copy"
+          className={` ${isCopied ? "text-amber-700 dark:text-amber-500" : ""}`}
+        />
+      </div>
     </div>
   );
 };
