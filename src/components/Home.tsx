@@ -2,9 +2,12 @@ import React, { useState, useEffect } from "react";
 import { profile } from "../utils/constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSun, faMoon } from "@fortawesome/free-regular-svg-icons";
+import { useLocation } from "@reach/router";
 
 const Home = () => {
   const [theme, setTheme] = useState("light");
+  const location = useLocation();
+  const isHomeVisible = location.pathname === "" || location.pathname === "/";
 
   useEffect(() => {
     if (
@@ -32,7 +35,11 @@ const Home = () => {
     }
   };
   return (
-    <div className="col-span-1 flex flex-grow flex-col lg:justify-center items-center px-6 pt-9">
+    <div
+      className={`${
+        isHomeVisible ? "flex" : "hidden"
+      } col-span-1 md:flex flex-grow flex-col lg:justify-center items-center px-6 pt-9`}
+    >
       <div className="lg:ml-24">
         <div className="font-semibold text-amber-700 dark:text-amber-100 pt-6 transition duration-700">
           Hello <span className="inline-block scale-x-[-1]"> 👋</span>
