@@ -15,14 +15,14 @@ import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 const Contact = () => {
   return (
     <Layout>
-      <div className="col-span-1 flex items-center max-w-lg">
-        <div className="">
-          <Link className="text-amber-700 dark:text-amber-200" to="/">
+      <div className="col-span-1 flex items-center max-w-lg pt-6">
+        <div className="animate-fadeIn">
+          <Link className="text-amber-700 dark:text-amber-200 pl-6" to="/">
             <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
             Menu
           </Link>
-          <div className="contact text-sm p-6 mt-4 rounded-2xl shadow-sm dark:shadow-neutral-70/50 bg-neutral-200 dark:bg-neutral-900/50 flex flex-col gap-6 lg:max-h-[31rem] overflow-auto">
-            <div className="bg-neutral-300 dark:bg-neutral-800 p-4 rounded-2xl shadow-sm dark:shadow-neutral-700/50">
+          <div className="contact text-sm p-6 flex flex-col gap-6 lg:max-h-[32rem] overflow-auto">
+            <div className="bg-neutral-200 dark:bg-neutral-900/75 p-4 rounded-2xl shadow-sm dark:shadow-neutral-700/50">
               <div className="flex gap-4">
                 <div>
                   <img
@@ -75,6 +75,7 @@ const Contact = () => {
             <Card title="Email" subtitle={profile.email} />
             <Card title="Work" subtitle={profile.workEmail} />
             <Card title="Birthday" subtitle={profile.birthday} />
+            <Card title="Address" subtitle="Kozhikode, Kerala" />
           </div>
         </div>
       </div>

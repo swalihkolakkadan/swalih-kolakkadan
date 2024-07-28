@@ -32,13 +32,13 @@ const Home = () => {
     }
   };
   return (
-    <div className="col-span-1 flex flex-grow flex-col lg:justify-center items-center">
+    <div className="col-span-1 flex flex-grow flex-col lg:justify-center items-center px-6 pt-9">
       <div className="lg:ml-24">
         <div className="font-semibold text-amber-700 dark:text-amber-100 pt-6 transition duration-700">
           Hello <span className="inline-block scale-x-[-1]"> 👋</span>
         </div>
         <div className="font-semibold text-3xl	mt-2">{`I'm ${profile.name}`}</div>
-        <div className=" pt-4 pr-28">{profile.aboutMe}</div>
+        <div className=" pt-4 lg:pr-28">{profile.aboutMe}</div>
         <div className="mt-8 flex">
           <a
             href="https://drive.google.com/file/d/1CoHpjU0Hh8HXJOcqGlRX6AmD6xEwlu7O/view?usp=sharing"

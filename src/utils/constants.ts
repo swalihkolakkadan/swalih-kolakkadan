@@ -9,6 +9,7 @@ const profile = {
   email: "swalih723@gmail.com",
   workEmail: "swalihkolakkadan@gmail.com",
   birthday: "May 5, 1998",
+  city: "Kozhikode",
 };
 
 export { profile };

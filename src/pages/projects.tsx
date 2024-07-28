@@ -27,8 +27,8 @@ const Projects = () => {
 
   return (
     <Layout>
-      <div className="col-span-1 flex lg:items-center">
-        <div className="">
+      <div className="col-span-1 flex lg:items-center px-6 py-9">
+        <div className="animate-fadeIn">
           <Link className="text-amber-700 dark:text-amber-200" to="/">
             <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
             Menu

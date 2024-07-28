@@ -13,7 +13,7 @@ const Card = ({ title, subtitle }: ContactCard) => {
 
   return (
     <div
-      className="group bg-neutral-300 dark:bg-neutral-800 p-4 rounded-2xl shadow-sm dark:shadow-neutral-700/50 flex hover:cursor-pointer"
+      className="group bg-neutral-200 dark:bg-neutral-900/50 p-4 rounded-2xl shadow-sm dark:shadow-neutral-700/50 flex hover:cursor-pointer hover:shadow-md"
       onClick={() => {
         navigator.clipboard.writeText(subtitle);
         setIsCopied(true);
@@ -27,7 +27,7 @@ const Card = ({ title, subtitle }: ContactCard) => {
           {title}
         </div>
         <div
-          className={`text-lg ${
+          className={`text-md ${
             isCopied ? "text-amber-700 dark:text-amber-500" : ""
           }`}
         >

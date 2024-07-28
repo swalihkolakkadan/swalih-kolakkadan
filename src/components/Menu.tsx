@@ -6,8 +6,8 @@ import { Link } from "gatsby";
 
 const Menu = () => {
   return (
-    <div className="col-span-1 flex flex-grow flex-col lg:justify-center lg:items-center">
-      <div className="text-gray-700 dark:text-gray-300 flex flex-wrap gap-8 max-w-96 mt-4">
+    <div className="col-span-1 flex flex-grow flex-col lg:justify-center lg:items-center px-6 py-9">
+      <div className="text-gray-700 dark:text-gray-300 flex flex-wrap gap-8 max-w-96 mt-4 animate-fadeIn">
         <Link to="/projects" className="menu-button">
           <FontAwesomeIcon icon={faFolder} size="2x" />
           <div>Projects</div>
