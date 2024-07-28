@@ -90,7 +90,7 @@ const Experience = () => {
                 <div className="mt-1 font-semibold text-lg group-hover:text-amber-600 dark:group-hover:text-amber-200">
                   {`${experience.roleName}, ${experience.companyName}`}
                 </div>
-                <div>
+                <div className="text-right">
                   {getDateValue(experience)}
                   <FontAwesomeIcon
                     icon={faArrowUpRightFromSquare}
