@@ -86,11 +86,11 @@ const Experience = () => {
               target="_blank"
               className=" block group p-3 mt-2 hover:bg-zinc-200/50 dark:hover:bg-zinc-900/50 hover:cursor-pointer rounded-md"
             >
-              <div className="flex items-center justify-between">
+              <div className="md:flex md:items-center md:justify-between">
                 <div className="mt-1 font-semibold text-lg group-hover:text-amber-600 dark:group-hover:text-amber-200">
                   {`${experience.roleName}, ${experience.companyName}`}
                 </div>
-                <div className="text-right">
+                <div className="md:text-right">
                   {getDateValue(experience)}
                   <FontAwesomeIcon
                     icon={faArrowUpRightFromSquare}
