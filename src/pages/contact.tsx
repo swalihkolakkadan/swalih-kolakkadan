@@ -10,7 +10,7 @@ import {
 import profileImage from "../images/prof.jpg";
 import { profile } from "../utils/constants";
 import Card from "../components/Card";
-import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
+import { faLinkedinIn, faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 
 const Contact = () => {
   return (
@@ -37,9 +37,9 @@ const Contact = () => {
                   </div>
                 </div>
               </div>
-              <div className="mt-4 flex gap-3">
+              <div className="mt-4 flex justify-between">
                 <button
-                  className="px-8 py-4 bg-neutral-400/75 dark:bg-neutral-700/75 rounded-3xl transition duration-300"
+                  className="contact-button"
                   title="Call"
                   onClick={() => {
                     window.location.href = `tel:${profile.contactNo}`;
@@ -48,7 +48,7 @@ const Contact = () => {
                   <FontAwesomeIcon icon={faPhone} size="lg" />
                 </button>
                 <button
-                  className="px-8 py-4 bg-neutral-400/75 dark:bg-neutral-700/75 rounded-3xl transition duration-300"
+                  className="contact-button"
                   title="Email"
                   onClick={() => {
                     window.location.href = `mailto:swalih723@gmail.com`;
@@ -57,13 +57,23 @@ const Contact = () => {
                   <FontAwesomeIcon icon={faEnvelope} size="lg" />
                 </button>
                 <button
-                  className="px-8 py-4 bg-neutral-400/75 dark:bg-neutral-700/75 rounded-3xl transition duration-300"
+                  className="contact-button"
                   title="Whatsapp"
                   onClick={() => {
                     window.location.href = "https://wa.me/+918592815130";
                   }}
                 >
                   <FontAwesomeIcon icon={faWhatsapp} size="xl" />
+                </button>
+                <button
+                  className="contact-button"
+                  title="Linkedin"
+                  onClick={() => {
+                    window.location.href =
+                      "https://www.linkedin.com/in/swalih-kolakkadan-071611177/";
+                  }}
+                >
+                  <FontAwesomeIcon icon={faLinkedinIn} size="lg" />
                 </button>
               </div>
             </div>
