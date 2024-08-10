@@ -28,6 +28,10 @@ const Stack = () => {
       rating: 4,
     },
     {
+      name: "MaterialUI",
+      rating: 4,
+    },
+    {
       name: "Angular",
       rating: 3.5,
     },
@@ -36,7 +40,7 @@ const Stack = () => {
       rating: 3.5,
     },
     {
-      name: "MaterialUI",
+      name: "Prime React",
       rating: 3.5,
     },
     { name: "Redux", rating: 3.5 },
@@ -65,7 +69,7 @@ const Stack = () => {
             <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
             Menu
           </Link>
-          <div className="mt-2 w-full md:max-w-80 bg-neutral-200 dark:bg-neutral-900/75 p-4 rounded-lg shadow-sm dark:shadow-neutral-700/50 flex flex-col gap-2">
+          <div className="mt-2 w-full md:max-w-80 bg-neutral-200 dark:bg-neutral-900/75 p-4 rounded-lg shadow-sm dark:shadow-neutral-700/50 flex flex-col gap-2 lg:max-h-[32rem] overflow-auto">
             {selfRating.map((skill) => (
               <div className="flex justify-between">
                 <div> {skill.name} </div>
