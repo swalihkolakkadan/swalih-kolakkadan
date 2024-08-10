@@ -46,19 +46,14 @@ const Home = () => {
         </div>
         <div className="font-semibold text-3xl	mt-2">{`I'm ${profile.name}`}</div>
         <div className=" pt-4 lg:pr-28">{profile.aboutMe}</div>
-        <div className="mt-8 flex">
+        <div className="mt-8 flex gap-8">
           <a
             href="https://drive.google.com/file/d/1CoHpjU0Hh8HXJOcqGlRX6AmD6xEwlu7O/view?usp=sharing"
             target="_blank"
           >
-            <button className="bg-amber-600 text-slate-200 dark:bg-amber-200 dark:text-slate-900 w-36 h-12 font-semibold rounded-md hover:text-amber-200 dark:hover:text-amber-500 transition duration-300">
-              Resume
-            </button>
+            <button className="home-button">View Resume</button>
           </a>
-          <button
-            className=" bg-amber-600 text-slate-200 dark:bg-amber-200 dark:text-slate-900 ml-8 w-36 h-12  font-semibold rounded-md hover:text-amber-200 dark:hover:text-amber-500 transition duration-300"
-            onClick={toggleTheme}
-          >
+          <button className="home-button" onClick={toggleTheme}>
             <FontAwesomeIcon
               icon={theme === "dark" ? faSun : faMoon}
               size="lg"

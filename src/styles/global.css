@@ -45,3 +45,7 @@
 .contact-button {
   @apply px-6 py-3 bg-neutral-300/75 dark:bg-neutral-700/75 rounded-2xl transition duration-300 hover:text-amber-500 dark:hover:text-amber-300;
 }
+
+.home-button {
+  @apply bg-amber-600 text-slate-200 dark:bg-amber-200 dark:text-slate-900 w-36 h-12 font-semibold rounded-md hover:text-amber-200 dark:hover:text-amber-500 transition duration-300
+}
