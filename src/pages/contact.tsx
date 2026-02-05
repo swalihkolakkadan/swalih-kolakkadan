@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import SEO from "../components/SEO";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,8 +10,23 @@ import {
 import { profile } from "../utils/constants";
 import Card from "../components/Card";
 import { faLinkedinIn, faWhatsapp } from "@fortawesome/free-brands-svg-icons";
+import mediumZoom from "medium-zoom";
 
 const Contact = () => {
+  const imageRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    if (imageRef.current) {
+      const zoom = mediumZoom(imageRef.current, {
+        margin: 48,
+        background: "rgba(0, 0, 0, 0.9)",
+      });
+
+      return () => {
+        zoom.detach();
+      };
+    }
+  }, []);
   return (
     <>
       <SEO
@@ -30,9 +45,10 @@ const Contact = () => {
               <div className="flex gap-4">
                 <div>
                   <img
+                    ref={imageRef}
                     src="/images/prof.jpg"
                     alt={profile.name}
-                    className="rounded-full	w-20 h-20 shadow-neutral-900"
+                    className="rounded-full w-20 h-20 shadow-neutral-900 cursor-pointer transition-transform hover:scale-105"
                   ></img>
                 </div>
                 <div className="pt-2">

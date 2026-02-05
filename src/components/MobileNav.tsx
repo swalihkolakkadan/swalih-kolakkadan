@@ -8,7 +8,6 @@ import {
   faLayerGroup,
   faAddressCard,
 } from "@fortawesome/free-solid-svg-icons";
-import { motion } from "framer-motion";
 
 const navItems = [
   { to: "/", icon: faHome, label: "Home" },
@@ -38,26 +37,22 @@ const MobileNav = () => {
             <NavLink
               key={item.to}
               to={item.to}
-              className="relative flex flex-col items-center justify-center min-w-[56px] min-h-[44px] p-2 rounded-lg transition-colors"
+              className="relative flex flex-col items-center justify-center min-w-[56px] min-h-[44px] p-2 rounded-lg transition-all duration-300"
               aria-label={item.label}
             >
               {isActive && (
-                <motion.div
-                  layoutId="activeTab"
-                  className="absolute inset-0 bg-amber-100 dark:bg-amber-900/30 rounded-lg"
-                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                />
+                <div className="absolute inset-0 bg-amber-100 dark:bg-amber-900/30 rounded-lg transition-all duration-300 animate-fadeIn" />
               )}
               <FontAwesomeIcon
                 icon={item.icon}
-                className={`relative z-10 text-lg transition-colors ${
+                className={`relative z-10 text-lg transition-colors duration-300 ${
                   isActive
                     ? "text-amber-600 dark:text-amber-400"
                     : "text-neutral-600 dark:text-neutral-400"
                 }`}
               />
               <span
-                className={`relative z-10 text-xs mt-1 transition-colors ${
+                className={`relative z-10 text-xs mt-1 transition-colors duration-300 ${
                   isActive
                     ? "text-amber-600 dark:text-amber-400 font-medium"
                     : "text-neutral-500 dark:text-neutral-500"
