@@ -1,13 +1,11 @@
 import React from "react";
-import { Helmet } from "react-helmet-async";
+import SEO from "../components/SEO";
 import Menu from "../components/Menu";
 
 const IndexPage: React.FC = () => {
   return (
     <>
-      <Helmet>
-        <title>Swalih Kolakkadan</title>
-      </Helmet>
+      <SEO pathname="/" />
       <Menu />
     </>
   );

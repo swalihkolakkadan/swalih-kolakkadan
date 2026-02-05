@@ -48,7 +48,7 @@ const Home = () => {
         <div className=" pt-4 lg:pr-28">{profile.aboutMe}</div>
         <div className="mt-8 flex gap-8">
           <a
-            href="https://drive.google.com/file/d/1k-XdiouW1xvLe4lEJMjoS0GyTdJzRLol/view?usp=sharing"
+            href="https://drive.google.com/file/d/1YTV9f75uCdowrB4N15zuh9RnRjbHfu4i/view?usp=sharing"
             target="_blank"
           >
             <button className="home-button">View Resume</button>

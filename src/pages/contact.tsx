@@ -1,6 +1,6 @@
 import React from "react";
-import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
+import SEO from "../components/SEO";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowLeft,
@@ -14,9 +14,11 @@ import { faLinkedinIn, faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 const Contact = () => {
   return (
     <>
-      <Helmet>
-        <title>Contact - Swalih Kolakkadan</title>
-      </Helmet>
+      <SEO
+        title="Contact"
+        description="Get in touch with Swalih Kolakkadan. Reach out via email, phone, LinkedIn, or WhatsApp for collaboration opportunities."
+        pathname="/contact"
+      />
       <div className="col-span-1 flex items-center max-w-lg pt-6">
         <div className="animate-fadeIn">
           <Link className="text-amber-700 dark:text-amber-200 pl-6" to="/">
@@ -36,7 +38,7 @@ const Contact = () => {
                 <div className="pt-2">
                   <div className="text-lg font-medium"> {profile.name}</div>
                   <div className="text-sm text-neutral-600 dark:text-neutral-400">
-                    {profile.designation}, {profile.currentCompnay}
+                    {profile.designation}, {profile.currentCompany}
                   </div>
                 </div>
               </div>

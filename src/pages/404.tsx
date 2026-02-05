@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
+import SEO from "../components/SEO";
 
 const pageStyles = {
   color: "#232129",
@@ -27,9 +27,7 @@ const codeStyles = {
 const NotFoundPage: React.FC = () => {
   return (
     <>
-      <Helmet>
-        <title>Not Found - Swalih Kolakkadan</title>
-      </Helmet>
+      <SEO title="Page Not Found" pathname="/404" />
       <main style={pageStyles}>
         <h1 style={headingStyles}>Page not found</h1>
         <p style={paragraphStyles}>

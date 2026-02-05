@@ -2,9 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Optimized variable font loading - single declaration for all weights */
 @font-face {
-  font-family: inter;
+  font-family: "Inter";
   src: url("/fonts/Inter-VariableFont_slnt,wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* width */

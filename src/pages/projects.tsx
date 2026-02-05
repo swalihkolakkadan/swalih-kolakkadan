@@ -1,12 +1,8 @@
 import React from "react";
-import { Helmet } from "react-helmet-async";
-import {
-  faArrowLeft,
-  faExternalLink,
-  faLink,
-} from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faExternalLink } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
+import SEO from "../components/SEO";
 
 const Projects = () => {
   const projects = [
@@ -34,9 +30,11 @@ const Projects = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Projects - Swalih Kolakkadan</title>
-      </Helmet>
+      <SEO
+        title="Projects"
+        description="Explore my portfolio projects including web applications and e-commerce platforms built with React, TypeScript, and modern technologies."
+        pathname="/projects"
+      />
       <div className="col-span-1 flex  lg:items-center px-6 py-9">
         <div className="animate-fadeIn">
           <Link className="text-amber-700 dark:text-amber-200" to="/">

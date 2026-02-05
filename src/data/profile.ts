@@ -1,4 +1,20 @@
-const profile = {
+export interface Profile {
+  name: string;
+  userName: string;
+  aboutMe: string;
+  designation: string;
+  currentCompany: string;
+  contactNo: string;
+  email: string;
+  workEmail: string;
+  birthday: string;
+  city: string;
+  linkedIn: string;
+  github: string;
+  resumeUrl: string;
+}
+
+export const profile: Profile = {
   name: "Swalih Kolakkadan",
   userName: "swalihKolakkadan",
   aboutMe:
@@ -12,7 +28,6 @@ const profile = {
   city: "Kozhikode",
   linkedIn: "https://www.linkedin.com/in/swalih-kolakkadan/",
   github: "https://github.com/swalihkolakkadan",
-  siteUrl: "https://swalih-kolakkadan.vercel.app",
+  resumeUrl:
+    "https://drive.google.com/file/d/1YTV9f75uCdowrB4N15zuh9RnRjbHfu4i/view?usp=sharing",
 };
-
-export { profile };

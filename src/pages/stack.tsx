@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
 import React from "react";
+import SEO from "../components/SEO";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import StarRating from "../components/StarRating";
@@ -63,9 +63,11 @@ const Stack = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Stack - Swalih Kolakkadan</title>
-      </Helmet>
+      <SEO
+        title="Tech Stack"
+        description="My technical skills and proficiency in React, TypeScript, JavaScript, Angular, and other frontend technologies."
+        pathname="/stack"
+      />
       <div className="col-span-1 flex lg:items-center px-6 py-9">
         <div className="flex-grow lg:pr-10 animate-fadeIn">
           <Link className="text-amber-700 dark:text-amber-200" to="/">

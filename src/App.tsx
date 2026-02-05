@@ -1,12 +1,23 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import { Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
-import IndexPage from "./pages/index";
-import ContactPage from "./pages/contact";
-import ExperiencePage from "./pages/experience";
-import ProjectsPage from "./pages/projects";
-import StackPage from "./pages/stack";
-import NotFoundPage from "./pages/404";
+
+// Lazy load pages for better performance (code splitting)
+const IndexPage = lazy(() => import("./pages/index"));
+const ContactPage = lazy(() => import("./pages/contact"));
+const ExperiencePage = lazy(() => import("./pages/experience"));
+const ProjectsPage = lazy(() => import("./pages/projects"));
+const StackPage = lazy(() => import("./pages/stack"));
+const NotFoundPage = lazy(() => import("./pages/404"));
+
+// Simple loading fallback
+const PageLoader = () => (
+  <div className="col-span-1 flex items-center justify-center min-h-[50vh]">
+    <div className="animate-pulse text-neutral-500 dark:text-neutral-400">
+      Loading...
+    </div>
+  </div>
+);
 
 function App() {
   return (
@@ -15,7 +26,9 @@ function App() {
         path="/"
         element={
           <Layout>
-            <IndexPage />
+            <Suspense fallback={<PageLoader />}>
+              <IndexPage />
+            </Suspense>
           </Layout>
         }
       />
@@ -23,7 +36,9 @@ function App() {
         path="/contact"
         element={
           <Layout>
-            <ContactPage />
+            <Suspense fallback={<PageLoader />}>
+              <ContactPage />
+            </Suspense>
           </Layout>
         }
       />
@@ -31,7 +46,9 @@ function App() {
         path="/experience"
         element={
           <Layout>
-            <ExperiencePage />
+            <Suspense fallback={<PageLoader />}>
+              <ExperiencePage />
+            </Suspense>
           </Layout>
         }
       />
@@ -39,7 +56,9 @@ function App() {
         path="/projects"
         element={
           <Layout>
-            <ProjectsPage />
+            <Suspense fallback={<PageLoader />}>
+              <ProjectsPage />
+            </Suspense>
           </Layout>
         }
       />
@@ -47,7 +66,9 @@ function App() {
         path="/stack"
         element={
           <Layout>
-            <StackPage />
+            <Suspense fallback={<PageLoader />}>
+              <StackPage />
+            </Suspense>
           </Layout>
         }
       />
@@ -55,7 +76,9 @@ function App() {
         path="*"
         element={
           <Layout>
-            <NotFoundPage />
+            <Suspense fallback={<PageLoader />}>
+              <NotFoundPage />
+            </Suspense>
           </Layout>
         }
       />

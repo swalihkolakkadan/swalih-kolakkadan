@@ -1,6 +1,6 @@
 import React from "react";
-import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
+import SEO from "../components/SEO";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowLeft,
@@ -73,9 +73,11 @@ const Experience = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Experience - Swalih Kolakkadan</title>
-      </Helmet>
+      <SEO
+        title="Experience"
+        description="My professional journey as a Frontend Engineer, including roles at Qburst and MediaOcean, building enterprise web applications."
+        pathname="/experience"
+      />
       <div className="col-span-1 flex items-center px-6 py-9">
         <div className="flex-grow lg:pr-10 animate-fadeIn">
           <Link className="text-amber-700 dark:text-amber-200" to="/">

@@ -77,12 +77,54 @@ A modern personal portfolio website built with Vite, React 18, TypeScript, and T
 
 ## 🚢 Deployment
 
-This project can be deployed to any static hosting service:
+This project is configured and ready to deploy to **Vercel**.
 
-- **Netlify**: Connect your repo and set build command to `npm run build` with publish directory `dist`
-- **Vercel**: Import project and it will auto-detect Vite
-- **GitHub Pages**: Use `gh-pages` package with `dist` directory
-- **Any CDN/Static Host**: Upload the contents of the `dist` folder
+### Deploy to Vercel ⭐
+
+The easiest and recommended way to deploy this portfolio. See detailed step-by-step instructions: [.agent/workflows/deploy-vercel.md](.agent/workflows/deploy-vercel.md)
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/swalihkolakkadan/swalih-kolakkadan)
+
+**Quick 3-Step Setup:**
+
+1. Sign up at [vercel.com](https://vercel.com) with your GitHub account
+2. Import your `swalih-kolakkadan` repository
+3. Click "Deploy" - Vercel auto-detects Vite configuration!
+
+**What's Included:**
+
+- ✅ `vercel.json` - Pre-configured routing and security headers
+- ✅ Automatic deployments on every push to main branch
+- ✅ Preview deployments for all pull requests
+- ✅ Custom domain support (free)
+- ✅ SSL certificate (automatic)
+
+### Build Configuration
+
+Vercel will automatically detect these settings:
+
+- **Framework:** Vite
+- **Build command:** `npm run build`
+- **Output directory:** `dist`
+- **Node version:** 18.x
+
+### Preview Production Build Locally
+
+Before deploying, you can test the production build:
+
+```bash
+npm run build      # Create production build
+npm run preview    # Test it locally at http://localhost:4173
+```
+
+### Alternative Hosting Options
+
+While optimized for Vercel, this project can also be deployed to:
+
+- **Cloudflare Pages** - Fast CDN with unlimited bandwidth
+- **Netlify** - Another excellent platform with similar features
+- **GitHub Pages** - Free hosting directly from GitHub
+- **Any Static Host** - Upload the `dist/` folder contents
 
 ## 📝 License
 
