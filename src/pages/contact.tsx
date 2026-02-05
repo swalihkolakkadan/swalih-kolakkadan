@@ -1,20 +1,22 @@
 import React from "react";
-import Layout from "../components/Layout";
-import { Link } from "gatsby";
+import { Helmet } from "react-helmet-async";
+import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowLeft,
   faEnvelope,
   faPhone,
 } from "@fortawesome/free-solid-svg-icons";
-import profileImage from "../images/prof.jpg";
 import { profile } from "../utils/constants";
 import Card from "../components/Card";
 import { faLinkedinIn, faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 
 const Contact = () => {
   return (
-    <Layout>
+    <>
+      <Helmet>
+        <title>Contact - Swalih Kolakkadan</title>
+      </Helmet>
       <div className="col-span-1 flex items-center max-w-lg pt-6">
         <div className="animate-fadeIn">
           <Link className="text-amber-700 dark:text-amber-200 pl-6" to="/">
@@ -26,7 +28,8 @@ const Contact = () => {
               <div className="flex gap-4">
                 <div>
                   <img
-                    src={profileImage}
+                    src="/images/prof.jpg"
+                    alt={profile.name}
                     className="rounded-full	w-20 h-20 shadow-neutral-900"
                   ></img>
                 </div>
@@ -89,7 +92,7 @@ const Contact = () => {
           </div>
         </div>
       </div>
-    </Layout>
+    </>
   );
 };
 

@@ -1,16 +1,16 @@
-import * as React from "react";
-import { type HeadFC, type PageProps } from "gatsby";
-import Layout from "../components/Layout";
+import React from "react";
+import { Helmet } from "react-helmet-async";
 import Menu from "../components/Menu";
 
-const IndexPage: React.FC<PageProps> = () => {
+const IndexPage: React.FC = () => {
   return (
-    <Layout>
+    <>
+      <Helmet>
+        <title>Swalih Kolakkadan</title>
+      </Helmet>
       <Menu />
-    </Layout>
+    </>
   );
 };
 
 export default IndexPage;
-
-export const Head: HeadFC = () => <title>Swalih Kolakkadan</title>;

@@ -1,12 +1,12 @@
 import React from "react";
-import Layout from "../components/Layout";
+import { Helmet } from "react-helmet-async";
 import {
   faArrowLeft,
   faExternalLink,
   faLink,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link } from "gatsby";
+import { Link } from "react-router-dom";
 
 const Projects = () => {
   const projects = [
@@ -33,7 +33,10 @@ const Projects = () => {
   ];
 
   return (
-    <Layout>
+    <>
+      <Helmet>
+        <title>Projects - Swalih Kolakkadan</title>
+      </Helmet>
       <div className="col-span-1 flex  lg:items-center px-6 py-9">
         <div className="animate-fadeIn">
           <Link className="text-amber-700 dark:text-amber-200" to="/">
@@ -68,7 +71,7 @@ const Projects = () => {
           </div>
         </div>
       </div>
-    </Layout>
+    </>
   );
 };
 

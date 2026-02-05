@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { profile } from "../utils/constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSun, faMoon } from "@fortawesome/free-regular-svg-icons";
-import { useLocation } from "@reach/router";
+import { useLocation } from "react-router-dom";
 
 const Home = () => {
   const [theme, setTheme] = useState("light");

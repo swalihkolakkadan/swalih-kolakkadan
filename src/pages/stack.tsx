@@ -1,5 +1,5 @@
-import { Link } from "gatsby";
-import Layout from "../components/Layout";
+import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
@@ -62,7 +62,10 @@ const Stack = () => {
   ];
 
   return (
-    <Layout>
+    <>
+      <Helmet>
+        <title>Stack - Swalih Kolakkadan</title>
+      </Helmet>
       <div className="col-span-1 flex lg:items-center px-6 py-9">
         <div className="flex-grow lg:pr-10 animate-fadeIn">
           <Link className="text-amber-700 dark:text-amber-200" to="/">
@@ -81,7 +84,7 @@ const Stack = () => {
           </div>
         </div>
       </div>
-    </Layout>
+    </>
   );
 };
 

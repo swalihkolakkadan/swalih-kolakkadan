@@ -4,7 +4,7 @@
 
 @font-face {
   font-family: inter;
-  src: url("./Inter-VariableFont_slnt\,wght.ttf") format("truetype");
+  src: url("/fonts/Inter-VariableFont_slnt,wght.ttf") format("truetype");
 }
 
 /* width */
@@ -47,5 +47,5 @@
 }
 
 .home-button {
-  @apply bg-amber-600 text-slate-200 dark:bg-amber-200 dark:text-slate-900 w-36 h-12 font-semibold rounded-md hover:text-amber-200 dark:hover:text-amber-500 transition duration-300
+  @apply bg-amber-600 text-slate-200 dark:bg-amber-200 dark:text-slate-900 w-36 h-12 font-semibold rounded-md hover:text-amber-200 dark:hover:text-amber-500 transition duration-300;
 }

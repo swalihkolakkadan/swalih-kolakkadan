@@ -1,49 +1,89 @@
-<p align="center">
-  <a href="https://www.gatsbyjs.com/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter-ts">
-    <img alt="Gatsby" src="https://www.gatsbyjs.com/Gatsby-Monogram.svg" width="60" />
-  </a>
-</p>
-<h1 align="center">
-  Gatsby Minimal TypeScript Starter
-</h1>
+# Swalih Kolakkadan - Portfolio
+
+A modern personal portfolio website built with Vite, React 18, TypeScript, and Tailwind CSS.
 
 ## 🚀 Quick start
 
-1.  **Create a Gatsby site.**
-
-    Use the Gatsby CLI to create a new site, specifying the minimal TypeScript starter.
+1.  **Install dependencies**
 
     ```shell
-    # create a new Gatsby site using the minimal TypeScript starter
-    npm init gatsby -- -ts
+    npm install
     ```
 
-2.  **Start developing.**
+2.  **Start developing**
 
-    Navigate into your new site’s directory and start it up.
+    Navigate into your site's directory and start the development server.
 
     ```shell
-    cd my-gatsby-site/
-    npm run develop
+    npm run dev
     ```
 
-3.  **Open the code and start customizing!**
+3.  **Open the site**
 
-    Your site is now running at http://localhost:8000!
+    Your site is now running at http://localhost:3000!
 
-    Edit `src/pages/index.tsx` to see your site update in real-time!
+    Edit `src/pages/index.tsx` to see your site update in real-time with Hot Module Replacement (HMR)!
 
-4.  **Learn more**
+4.  **Build for production**
 
-    - [Documentation](https://www.gatsbyjs.com/docs/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter-ts)
-    - [Tutorials](https://www.gatsbyjs.com/docs/tutorial/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter-ts)
-    - [Guides](https://www.gatsbyjs.com/docs/how-to/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter-ts)
-    - [API Reference](https://www.gatsbyjs.com/docs/api-reference/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter-ts)
-    - [Plugin Library](https://www.gatsbyjs.com/plugins?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter-ts)
-    - [Cheat Sheet](https://www.gatsbyjs.com/docs/cheat-sheet/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter-ts)
+    ```shell
+    npm run build
+    ```
 
-## 🚀 Quick start (Netlify)
+    The production-ready files will be in the `dist/` directory.
 
-Deploy this starter with one click on [Netlify](https://app.netlify.com/signup):
+5.  **Preview production build**
 
-[<img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" />](https://app.netlify.com/start/deploy?repository=https://github.com/gatsbyjs/gatsby-starter-minimal-ts)
+    ```shell
+    npm run preview
+    ```
+
+## 📦 Tech Stack
+
+- **Vite** - Next generation frontend tooling
+- **React 18** - UI framework with the latest features
+- **TypeScript** - Type safety and better developer experience
+- **React Router v6** - Client-side routing
+- **Tailwind CSS v3** - Utility-first CSS framework
+- **React Helmet Async** - SEO meta tag management
+- **FontAwesome** - Icon library
+
+## 📁 Project Structure
+
+```
+├── public/              # Static assets (images, fonts)
+├── src/
+│   ├── components/      # Reusable React components
+│   ├── pages/          # Page components (routes)
+│   ├── styles/         # Global CSS styles
+│   ├── utils/          # Utility functions and constants
+│   ├── App.tsx         # Main app component with routing
+│   └── main.tsx        # Application entry point
+├── index.html          # HTML entry point
+├── vite.config.ts      # Vite configuration
+└── tailwind.config.js  # Tailwind CSS configuration
+```
+
+## 🎨 Features
+
+- ⚡️ Lightning-fast development with Vite
+- 🎯 Type-safe development with TypeScript
+- 🎨 Modern, responsive design with Tailwind CSS
+- 🌓 Dark mode support
+- 📱 Mobile-friendly interface
+- ♿️ Accessible components
+- 🚀 Optimized production builds
+- 🔄 Fast refresh for instant feedback
+
+## 🚢 Deployment
+
+This project can be deployed to any static hosting service:
+
+- **Netlify**: Connect your repo and set build command to `npm run build` with publish directory `dist`
+- **Vercel**: Import project and it will auto-detect Vite
+- **GitHub Pages**: Use `gh-pages` package with `dist` directory
+- **Any CDN/Static Host**: Upload the contents of the `dist` folder
+
+## 📝 License
+
+This is a personal portfolio project.
