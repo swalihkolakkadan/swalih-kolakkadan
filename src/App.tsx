@@ -1,6 +1,7 @@
 import React, { Suspense, lazy } from "react";
 import { Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
+import { ChatWidget } from "./components/chatbot";
 
 // Lazy load pages for better performance (code splitting)
 const IndexPage = lazy(() => import("./pages/index"));
@@ -21,68 +22,73 @@ const PageLoader = () => (
 
 function App() {
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <Layout>
-            <Suspense fallback={<PageLoader />}>
-              <IndexPage />
-            </Suspense>
-          </Layout>
-        }
-      />
-      <Route
-        path="/contact"
-        element={
-          <Layout>
-            <Suspense fallback={<PageLoader />}>
-              <ContactPage />
-            </Suspense>
-          </Layout>
-        }
-      />
-      <Route
-        path="/experience"
-        element={
-          <Layout>
-            <Suspense fallback={<PageLoader />}>
-              <ExperiencePage />
-            </Suspense>
-          </Layout>
-        }
-      />
-      <Route
-        path="/projects"
-        element={
-          <Layout>
-            <Suspense fallback={<PageLoader />}>
-              <ProjectsPage />
-            </Suspense>
-          </Layout>
-        }
-      />
-      <Route
-        path="/stack"
-        element={
-          <Layout>
-            <Suspense fallback={<PageLoader />}>
-              <StackPage />
-            </Suspense>
-          </Layout>
-        }
-      />
-      <Route
-        path="*"
-        element={
-          <Layout>
-            <Suspense fallback={<PageLoader />}>
-              <NotFoundPage />
-            </Suspense>
-          </Layout>
-        }
-      />
-    </Routes>
+    <>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <Layout>
+              <Suspense fallback={<PageLoader />}>
+                <IndexPage />
+              </Suspense>
+            </Layout>
+          }
+        />
+        <Route
+          path="/contact"
+          element={
+            <Layout>
+              <Suspense fallback={<PageLoader />}>
+                <ContactPage />
+              </Suspense>
+            </Layout>
+          }
+        />
+        <Route
+          path="/experience"
+          element={
+            <Layout>
+              <Suspense fallback={<PageLoader />}>
+                <ExperiencePage />
+              </Suspense>
+            </Layout>
+          }
+        />
+        <Route
+          path="/projects"
+          element={
+            <Layout>
+              <Suspense fallback={<PageLoader />}>
+                <ProjectsPage />
+              </Suspense>
+            </Layout>
+          }
+        />
+        <Route
+          path="/stack"
+          element={
+            <Layout>
+              <Suspense fallback={<PageLoader />}>
+                <StackPage />
+              </Suspense>
+            </Layout>
+          }
+        />
+        <Route
+          path="*"
+          element={
+            <Layout>
+              <Suspense fallback={<PageLoader />}>
+                <NotFoundPage />
+              </Suspense>
+            </Layout>
+          }
+        />
+      </Routes>
+
+      {/* AI Chatbot Widget - available on all pages */}
+      <ChatWidget />
+    </>
   );
 }
 

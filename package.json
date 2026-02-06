@@ -22,6 +22,7 @@
     "@fortawesome/free-regular-svg-icons": "^6.5.2",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@rive-app/react-webgl2": "^4.26.2",
     "medium-zoom": "^1.1.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
