@@ -14,30 +14,48 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const [theme, setTheme] = useState<Theme>("light");
 
   useEffect(() => {
-    // Check localStorage first, then system preference
-    if (
-      localStorage.theme === "dark" ||
-      (!("theme" in localStorage) &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches)
-    ) {
+    // Always start with system preference (clear any stored override)
+    localStorage.removeItem("theme");
+
+    const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
+      .matches
+      ? "dark"
+      : "light";
+
+    if (systemTheme === "dark") {
       document.documentElement.classList.add("dark");
-      setTheme("dark");
     } else {
       document.documentElement.classList.remove("dark");
-      setTheme("light");
     }
+    setTheme(systemTheme);
+
+    // Listen for system theme changes
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleSystemThemeChange = (e: MediaQueryListEvent) => {
+      const newTheme = e.matches ? "dark" : "light";
+      if (newTheme === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+      setTheme(newTheme);
+    };
+
+    mediaQuery.addEventListener("change", handleSystemThemeChange);
+    return () => {
+      mediaQuery.removeEventListener("change", handleSystemThemeChange);
+    };
   }, []);
 
   const toggleTheme = () => {
-    if (theme === "light") {
+    // Toggle theme for current session only (no localStorage persistence)
+    const newTheme = theme === "light" ? "dark" : "light";
+    if (newTheme === "dark") {
       document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-      setTheme("dark");
     } else {
       document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-      setTheme("light");
     }
+    setTheme(newTheme);
   };
 
   return (

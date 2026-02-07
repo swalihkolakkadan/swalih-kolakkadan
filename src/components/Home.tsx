@@ -1,38 +1,52 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { profile } from "../utils/constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSun, faMoon } from "@fortawesome/free-regular-svg-icons";
 import { useLocation } from "react-router-dom";
 
 const Home = () => {
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState<"light" | "dark">("light");
   const location = useLocation();
   const isHomeVisible = location.pathname === "" || location.pathname === "/";
 
-  useEffect(() => {
-    if (
-      localStorage.theme === "dark" ||
-      (!("theme" in localStorage) &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches)
-    ) {
-      document.documentElement.classList.add("dark");
-      setTheme("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      setTheme("light");
-    }
+  // Get the system preferred theme
+  const getSystemTheme = useCallback((): "light" | "dark" => {
+    return window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
   }, []);
 
-  const toggleTheme = () => {
-    if (theme === "light") {
+  // Apply the theme to the document
+  const applyTheme = useCallback((newTheme: "light" | "dark") => {
+    if (newTheme === "dark") {
       document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-      setTheme("dark");
     } else {
       document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-      setTheme("light");
     }
+    setTheme(newTheme);
+  }, []);
+
+  useEffect(() => {
+    // Always start with system preference (clear any stored override)
+    localStorage.removeItem("theme");
+    applyTheme(getSystemTheme());
+
+    // Listen for system theme changes
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleSystemThemeChange = (e: MediaQueryListEvent) => {
+      applyTheme(e.matches ? "dark" : "light");
+    };
+
+    mediaQuery.addEventListener("change", handleSystemThemeChange);
+    return () => {
+      mediaQuery.removeEventListener("change", handleSystemThemeChange);
+    };
+  }, [applyTheme, getSystemTheme]);
+
+  const toggleTheme = () => {
+    // Toggle theme for current session only (no localStorage persistence)
+    const newTheme = theme === "light" ? "dark" : "light";
+    applyTheme(newTheme);
   };
   return (
     <div
