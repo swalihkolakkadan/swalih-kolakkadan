@@ -27,6 +27,8 @@ export interface RivePlayerProps {
   src: string;
   artboard?: string;
   isPlaying?: boolean;
+  /** Whether the user's mic is active (avatar shows attentive/listening pose) */
+  isListening?: boolean;
   /** Rive mouth shape number (0-11). Set by RiveAvatar from Polly visemes. */
   mouthValue?: number;
 }
@@ -36,6 +38,7 @@ const RivePlayer: React.FC<RivePlayerProps> = ({
   src,
   artboard,
   isPlaying = true,
+  isListening = false,
   mouthValue,
 }) => {
   const hasStartedRef = useRef(false);
@@ -151,6 +154,17 @@ const RivePlayer: React.FC<RivePlayerProps> = ({
       }
     }
   }, [rive, isPlaying, fireTrigger]);
+
+  // ─── 7. Show attentive/listening pose when user's mic is active ──────
+  useEffect(() => {
+    if (!rive || isPlaying) return;
+
+    if (isListening) {
+      hasStartedRef.current = true;
+      rive.play();
+      fireTrigger("waitingTrig");
+    }
+  }, [rive, isListening, isPlaying, fireTrigger]);
 
   return <RiveComponent className={className} />;
 };

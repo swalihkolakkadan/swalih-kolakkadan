@@ -6,11 +6,14 @@ import {
   faPaperPlane,
   faVolumeUp,
   faVolumeMute,
+  faMicrophone,
+  faStop,
 } from "@fortawesome/free-solid-svg-icons";
 import RiveAvatar from "./RiveAvatar";
 import AudioPlayer from "./AudioPlayer";
 import ChatMessage from "./ChatMessage";
 import { useChatState } from "../../hooks/useChatState";
+import { useSpeechToText } from "../../hooks/useSpeechToText";
 import "../../styles/chatbot.css";
 
 const ChatWidget: React.FC = () => {
@@ -33,18 +36,63 @@ const ChatWidget: React.FC = () => {
     clearError,
   } = useChatState();
 
+  const {
+    isSupported: isSttSupported,
+    isListening,
+    transcript,
+    finalTranscript,
+    error: sttError,
+    startListening,
+    stopListening,
+    resetTranscript,
+  } = useSpeechToText();
+
   // Scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Show live transcript in the input field while listening
+  useEffect(() => {
+    if (isListening) {
+      const live = (finalTranscript + ' ' + transcript).trim();
+      setInputValue(live);
+    }
+  }, [transcript, finalTranscript, isListening]);
+
+  // When listening stops, commit the final transcript
+  useEffect(() => {
+    if (!isListening && finalTranscript) {
+      const message = finalTranscript.trim();
+      if (message) {
+        setInputValue(message);
+      }
+      resetTranscript();
+    }
+  }, [isListening, finalTranscript, resetTranscript]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputValue.trim() || isLoading) return;
 
+    // Stop listening if the user submits while mic is active
+    if (isListening) {
+      stopListening();
+    }
+
     const message = inputValue.trim();
     setInputValue("");
     await sendMessage(message);
+  };
+
+  const handleMicToggle = () => {
+    if (isListening) {
+      stopListening();
+    } else {
+      // Clear any previous input when starting fresh recording
+      setInputValue("");
+      startListening();
+    }
   };
 
   const toggleMute = () => {
@@ -78,7 +126,11 @@ const ChatWidget: React.FC = () => {
                 Swalih
               </h3>
               <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                {isLoading ? "Typing..." : "Ask me anything!"}
+                {isListening
+                  ? "Listening..."
+                  : isLoading
+                    ? "Typing..."
+                    : "Ask me anything!"}
               </p>
             </div>
           </div>
@@ -113,6 +165,7 @@ const ChatWidget: React.FC = () => {
             alignment={currentAudioData?.alignment}
             currentTimeMs={currentTime}
             isPlaying={isPlaying && !isMuted}
+            isListening={isListening}
           />
         </div>
 
@@ -140,16 +193,34 @@ const ChatWidget: React.FC = () => {
           <div ref={messagesEndRef} />
         </div>
 
+        {/* STT Error */}
+        {sttError && (
+          <div className="px-4 py-2 text-xs text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border-t border-red-200 dark:border-red-800">
+            {sttError}
+          </div>
+        )}
+
         {/* Input */}
         <form onSubmit={handleSubmit} className="chat-widget-input">
           <input
             type="text"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Type your message..."
-            disabled={isLoading}
+            placeholder={isListening ? "Speak now..." : "Type your message..."}
+            disabled={isLoading || isListening}
             className="flex-1 bg-transparent outline-none text-neutral-900 dark:text-white placeholder-neutral-500"
           />
+          {isSttSupported && (
+            <button
+              type="button"
+              onClick={handleMicToggle}
+              disabled={isLoading}
+              className={`chat-mic-button ${isListening ? "listening" : ""}`}
+              aria-label={isListening ? "Stop recording" : "Start voice input"}
+            >
+              <FontAwesomeIcon icon={isListening ? faStop : faMicrophone} />
+            </button>
+          )}
           <button
             type="submit"
             disabled={isLoading || !inputValue.trim()}

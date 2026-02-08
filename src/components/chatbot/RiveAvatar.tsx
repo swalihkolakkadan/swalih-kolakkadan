@@ -56,6 +56,7 @@ export interface RiveAvatarProps {
   alignment?: SpeechAlignment;
   currentTimeMs?: number;
   isPlaying?: boolean;
+  isListening?: boolean;
   artboardName?: string;
 }
 
@@ -64,6 +65,7 @@ const RiveAvatar: React.FC<RiveAvatarProps> = ({
   alignment,
   currentTimeMs = 0,
   isPlaying = true,
+  isListening = false,
   artboardName = "Artboard",
 }) => {
   const src = "/TutorFinal.riv";
@@ -107,6 +109,7 @@ const RiveAvatar: React.FC<RiveAvatarProps> = ({
       src={src}
       artboard={artboardName}
       isPlaying={isPlaying}
+      isListening={isListening}
       mouthValue={mouthValue}
     />
   );
