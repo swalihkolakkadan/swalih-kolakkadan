@@ -34,8 +34,6 @@ export interface RivePlayerProps {
   className?: string;
   src: string;
   artboard?: string;
-  animations?: string | string[];
-  stateMachines?: string | string[];
   isPlaying?: boolean;
   mouthPhoneme?: string;
 }
@@ -44,8 +42,6 @@ const RivePlayer: React.FC<RivePlayerProps> = ({
   className,
   src,
   artboard,
-  animations,
-  stateMachines,
   isPlaying = true,
   mouthPhoneme,
 }) => {
@@ -57,14 +53,26 @@ const RivePlayer: React.FC<RivePlayerProps> = ({
     () => ({
       src,
       artboard,
-      animations,
-      stateMachines,
       autoplay: true,
-      onLoad: () => {
+      onRiveReady: (instance: any) => {
+        if (initializedRef.current) return;
         initializedRef.current = true;
+
+        // Auto-detect and play the first state machine or animation
+        const machines = instance.stateMachineNames;
+        if (machines && machines.length > 0) {
+          instance.play(machines[0]);
+          return;
+        }
+        const anims = instance.animationNames;
+        if (anims && anims.length > 0) {
+          instance.play(anims[0]);
+          return;
+        }
+        instance.play();
       },
     }),
-    [src, artboard, animations, stateMachines],
+    [src, artboard],
   );
 
   const { rive, RiveComponent } = useRive(riveParams, {
@@ -88,39 +96,35 @@ const RivePlayer: React.FC<RivePlayerProps> = ({
     }
   };
 
-  // Initialize on ready
+  // Fire idle trigger once on first ready
   useEffect(() => {
     if (!rive) return;
-    try {
-      const machines = rive.stateMachineNames || [];
-      if (machines.includes("Character") && !idleTriggeredRef.current) {
-        idleTriggeredRef.current = true;
-        fireTrigger("idleTrig");
-      }
-    } catch {}
+    if (!idleTriggeredRef.current) {
+      idleTriggeredRef.current = true;
+      fireTrigger("idleTrig");
+    }
   }, [rive]);
 
-  // Update mouth when phoneme changes
+  // Update mouth input when phoneme changes
   useEffect(() => {
     if (!rive || !mouthPhoneme) return;
 
     const key = mouthPhoneme.trim().toUpperCase();
     const value = PHONEME_TO_MOUTH[key];
+    if (typeof value !== "number") return;
 
-    if (typeof value === "number") {
-      try {
-        const inputs = rive.stateMachineInputs("Character") || [];
-        const mouthInput = inputs.find((i) => i.name === "mouth");
-        if (mouthInput && typeof mouthInput.value === "number") {
-          mouthInput.value = value;
-        }
-      } catch (err) {
-        console.warn("[RivePlayer] Failed to set mouth:", err);
+    try {
+      const inputs = rive.stateMachineInputs("Character") || [];
+      const mouthInput = inputs.find((i) => i.name === "mouth");
+      if (mouthInput) {
+        mouthInput.value = value;
       }
+    } catch (err) {
+      console.warn("[RivePlayer] Failed to set mouth input:", err);
     }
   }, [rive, mouthPhoneme]);
 
-  // Handle play/pause state
+  // Switch between idle / talking based on isPlaying
   useEffect(() => {
     if (!rive) return;
 
