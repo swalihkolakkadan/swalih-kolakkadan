@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import type { ChatMessage, PhonemeAlignment } from '../types/chatTypes';
+import type { ChatMessage, SpeechAlignment } from '../types/chatTypes';
 import { sendMessage as sendChatMessage } from '../services/chatService';
 
 interface UseChatStateReturn {
@@ -7,7 +7,7 @@ interface UseChatStateReturn {
   isLoading: boolean;
   isPlaying: boolean;
   currentTime: number;
-  currentAudioData: { base64: string; alignment: PhonemeAlignment } | null;
+  currentAudioData: { base64: string; alignment: SpeechAlignment } | null;
   error: string | null;
   sendMessage: (message: string) => Promise<void>;
   setIsPlaying: (playing: boolean) => void;
@@ -22,7 +22,7 @@ export function useChatState(): UseChatStateReturn {
   const [currentTime, setCurrentTime] = useState(0);
   const [currentAudioData, setCurrentAudioData] = useState<{
     base64: string;
-    alignment: PhonemeAlignment;
+    alignment: SpeechAlignment;
   } | null>(null);
   const [error, setError] = useState<string | null>(null);
 

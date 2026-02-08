@@ -1,4 +1,4 @@
-import type { PhonemeAlignment } from '../types/chatTypes';
+import type { SpeechAlignment } from '../types/chatTypes';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
@@ -28,7 +28,7 @@ export function getSessionId(): string {
 export interface ChatApiResponse {
   text: string;
   audioBase64?: string;
-  alignment?: PhonemeAlignment;
+  alignment?: SpeechAlignment;
 }
 
 

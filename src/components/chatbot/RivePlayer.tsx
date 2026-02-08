@@ -1,41 +1,34 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+} from "react";
 import { useRive, UseRiveParameters } from "@rive-app/react-webgl2";
 
-const PHONEME_TO_MOUTH: Record<string, number> = {
-  IDLE: 0,
-  P: 1,
-  B: 1,
-  M: 1,
-  A: 2,
-  E: 2,
-  I: 2,
-  Y: 3,
-  Z: 3,
-  C: 3,
-  D: 3,
-  N: 3,
-  S: 3,
-  X: 3,
-  TH: 4,
-  SH: 5,
-  CH: 5,
-  Q: 6,
-  W: 6,
-  O: 7,
-  HA: 8,
-  F: 9,
-  V: 9,
-  G: 10,
-  K: 10,
-  L: 11,
-};
+/**
+ * The TutorFinal.riv file has this structure:
+ *   Main Artboard ("Artboard")
+ *     └─ State Machine ("State Machine 1") – no direct inputs
+ *     └─ Nested Artboard ("Character") – contains the actual inputs:
+ *            • Number input "mouth" (0-11)
+ *            • Triggers: "idleTrig", "talkingTrig", "waitingTrig"
+ *
+ * We use Rive's path-based APIs to reach into the nested artboard:
+ *   rive.setNumberStateAtPath("mouth", value, "Character")
+ *   rive.fireStateAtPath("talkingTrig", "Character")
+ */
+
+const NESTED_ARTBOARD = "Character";
 
 export interface RivePlayerProps {
   className?: string;
   src: string;
   artboard?: string;
   isPlaying?: boolean;
-  mouthPhoneme?: string;
+  /** Rive mouth shape number (0-11). Set by RiveAvatar from Polly visemes. */
+  mouthValue?: number;
 }
 
 const RivePlayer: React.FC<RivePlayerProps> = ({
@@ -43,33 +36,29 @@ const RivePlayer: React.FC<RivePlayerProps> = ({
   src,
   artboard,
   isPlaying = true,
-  mouthPhoneme,
+  mouthValue,
 }) => {
-  const initializedRef = useRef(false);
-  const idleTriggeredRef = useRef(false);
   const hasStartedRef = useRef(false);
+  const lastMouthValueRef = useRef<number>(-1);
+  const riveRef = useRef<any>(null);
 
+  // ─── 1. Load Rive with autoplay ───────────────────────────────────────
   const riveParams: UseRiveParameters = useMemo(
     () => ({
       src,
       artboard,
       autoplay: true,
       onRiveReady: (instance: any) => {
-        if (initializedRef.current) return;
-        initializedRef.current = true;
-
-        // Auto-detect and play the first state machine or animation
+        // Auto-detect and play the first state machine if available
         const machines = instance.stateMachineNames;
-        if (machines && machines.length > 0) {
+        if (machines?.length > 0) {
           instance.play(machines[0]);
-          return;
+        } else {
+          const anims = instance.animationNames;
+          if (anims?.length > 0) {
+            instance.play(anims[0]);
+          }
         }
-        const anims = instance.animationNames;
-        if (anims && anims.length > 0) {
-          instance.play(anims[0]);
-          return;
-        }
-        instance.play();
       },
     }),
     [src, artboard],
@@ -82,49 +71,70 @@ const RivePlayer: React.FC<RivePlayerProps> = ({
     shouldResizeCanvasToContainer: true,
   });
 
-  // Fire a state machine trigger
-  const fireTrigger = (triggerName: string) => {
-    if (!rive) return;
+  // Keep a ref so callbacks always have the latest rive instance
+  riveRef.current = rive;
+
+  // ─── 2. Fire a trigger on the nested "Character" artboard ─────────────
+  const fireTrigger = useCallback((triggerName: string) => {
+    const r = riveRef.current;
+    if (!r) return;
     try {
-      const inputs = rive.stateMachineInputs("Character") || [];
+      // First try state machine inputs (in case the SM has direct inputs)
+      const inputs = r.stateMachineInputs("State Machine 1") || [];
       const trig = inputs.find((i: any) => i.name === triggerName);
-      if (trig && typeof (trig as any).fire === "function") {
-        (trig as any).fire();
+      if (trig && typeof trig.fire === "function") {
+        trig.fire();
+        console.log(`[RivePlayer] Fired trigger (SM input): ${triggerName}`);
+      } else {
+        // Fallback: path-based API targeting the nested "Character" artboard
+        r.fireStateAtPath(triggerName, NESTED_ARTBOARD);
+        console.log(`[RivePlayer] Fired trigger (path): ${triggerName}`);
       }
     } catch (err) {
-      console.warn("[RivePlayer] Failed to fire trigger:", triggerName, err);
+      console.warn(`[RivePlayer] Failed to fire trigger '${triggerName}':`, err);
     }
-  };
+  }, []);
 
-  // Fire idle trigger once on first ready
-  useEffect(() => {
-    if (!rive) return;
-    if (!idleTriggeredRef.current) {
-      idleTriggeredRef.current = true;
-      fireTrigger("idleTrig");
-    }
-  }, [rive]);
-
-  // Update mouth input when phoneme changes
-  useEffect(() => {
-    if (!rive || !mouthPhoneme) return;
-
-    const key = mouthPhoneme.trim().toUpperCase();
-    const value = PHONEME_TO_MOUTH[key];
-    if (typeof value !== "number") return;
-
+  // ─── 3. Set the mouth number on the nested "Character" artboard ───────
+  const setMouth = useCallback((value: number) => {
+    const r = riveRef.current;
+    if (!r) return;
     try {
-      const inputs = rive.stateMachineInputs("Character") || [];
-      const mouthInput = inputs.find((i) => i.name === "mouth");
+      // First try state machine inputs
+      const inputs = r.stateMachineInputs("State Machine 1") || [];
+      const mouthInput = inputs.find((i: any) => i.name === "mouth");
       if (mouthInput) {
         mouthInput.value = value;
+      } else {
+        // Fallback: path-based API targeting the nested artboard
+        r.setNumberStateAtPath("mouth", value, NESTED_ARTBOARD);
       }
     } catch (err) {
-      console.warn("[RivePlayer] Failed to set mouth input:", err);
+      console.warn("[RivePlayer] Failed to set mouth:", err);
     }
-  }, [rive, mouthPhoneme]);
+  }, []);
 
-  // Switch between idle / talking based on isPlaying
+  // ─── 4. Fire idle trigger once when rive loads ────────────────────────
+  useEffect(() => {
+    if (!rive) return;
+
+    console.log("[RivePlayer] Rive ready");
+    console.log("[RivePlayer] State machines:", rive.stateMachineNames);
+    console.log("[RivePlayer] Animations:", rive.animationNames);
+
+    // Start in idle state
+    fireTrigger("idleTrig");
+  }, [rive, fireTrigger]);
+
+  // ─── 5. Update mouth value via path-based API ─────────────────────────
+  useLayoutEffect(() => {
+    if (mouthValue == null) return;
+    if (lastMouthValueRef.current === mouthValue) return;
+    lastMouthValueRef.current = mouthValue;
+    setMouth(mouthValue);
+  }, [mouthValue, setMouth]);
+
+  // ─── 6. Switch idle ↔ talking based on isPlaying ──────────────────────
   useEffect(() => {
     if (!rive) return;
 
@@ -133,14 +143,14 @@ const RivePlayer: React.FC<RivePlayerProps> = ({
       rive.play();
       fireTrigger("talkingTrig");
     } else {
-      rive.play();
+      rive.play(); // keep Rive running; just swap triggers
       if (hasStartedRef.current) {
         fireTrigger("waitingTrig");
       } else {
         fireTrigger("idleTrig");
       }
     }
-  }, [rive, isPlaying]);
+  }, [rive, isPlaying, fireTrigger]);
 
   return <RiveComponent className={className} />;
 };
