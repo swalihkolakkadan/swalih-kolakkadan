@@ -1,13 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faComment,
+  faMicrophone,
+  faKeyboard,
+  faClockRotateLeft,
   faTimes,
   faPaperPlane,
-  faVolumeUp,
-  faVolumeMute,
-  faMicrophone,
-  faStop,
 } from "@fortawesome/free-solid-svg-icons";
 import RiveAvatar from "./RiveAvatar";
 import AudioPlayer from "./AudioPlayer";
@@ -16,11 +14,18 @@ import { useChatState } from "../../hooks/useChatState";
 import { useSpeechToText } from "../../hooks/useSpeechToText";
 import "../../styles/chatbot.css";
 
-const ChatWidget: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [inputValue, setInputValue] = useState("");
-  const [isMuted, setIsMuted] = useState(false);
+type Mode = "idle" | "talk" | "type";
 
+const ChatWidget: React.FC = () => {
+  const [mode, setMode] = useState<Mode>("idle");
+  const [isHovering, setIsHovering] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [showBubble, setShowBubble] = useState(false);
+  const [latestResponse, setLatestResponse] = useState("");
+  const [inputValue, setInputValue] = useState("");
+
+  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const bubbleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const {
@@ -47,200 +52,363 @@ const ChatWidget: React.FC = () => {
     resetTranscript,
   } = useSpeechToText();
 
-  // Scroll to bottom when messages change
+  // Cleanup timeouts on unmount
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    return () => {
+      if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+      if (bubbleTimeoutRef.current) clearTimeout(bubbleTimeoutRef.current);
+    };
+  }, []);
 
-  // Show live transcript in the input field while listening
-  useEffect(() => {
-    if (isListening) {
-      const live = (finalTranscript + ' ' + transcript).trim();
-      setInputValue(live);
+  // Live transcript for display in talk mode
+  const liveTranscript = (finalTranscript + " " + transcript).trim();
+
+  // ---- Hover handlers ----
+  const handleMouseEnter = () => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
     }
-  }, [transcript, finalTranscript, isListening]);
+    setIsHovering(true);
+  };
 
-  // When listening stops, commit the final transcript
+  const handleMouseLeave = () => {
+    hoverTimeoutRef.current = setTimeout(() => {
+      setIsHovering(false);
+    }, 400);
+  };
+
+  // Mobile: tap avatar to toggle action buttons
+  const handleAvatarClick = () => {
+    if (mode === "idle") {
+      setIsHovering((prev) => !prev);
+    }
+  };
+
+  // ---- Mode handlers ----
+  const handleTalkClick = () => {
+    setMode("talk");
+    setIsHovering(false);
+    startListening();
+  };
+
+  const handleTypeClick = () => {
+    setMode("type");
+    setIsHovering(false);
+  };
+
+  const handleClose = () => {
+    if (isListening) stopListening();
+    resetTranscript();
+    setInputValue("");
+    setMode("idle");
+  };
+
+  // ---- Talk mode: auto-send when STT finalizes ----
   useEffect(() => {
-    if (!isListening && finalTranscript) {
+    if (mode === "talk" && !isListening && finalTranscript) {
       const message = finalTranscript.trim();
       if (message) {
-        setInputValue(message);
+        sendMessage(message);
       }
       resetTranscript();
     }
-  }, [isListening, finalTranscript, resetTranscript]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode, isListening, finalTranscript]);
 
+  // ---- Talk mode: auto-restart listening after response plays ----
+  useEffect(() => {
+    if (mode !== "talk") return;
+    if (messages.length === 0) return;
+    if (isListening || isLoading || isPlaying) return;
+
+    const timer = setTimeout(() => {
+      startListening();
+    }, 800);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode, isListening, isLoading, isPlaying, messages.length]);
+
+  // ---- Speech bubble: show on new assistant message ----
+  useEffect(() => {
+    if (messages.length > 0) {
+      const lastMessage = messages[messages.length - 1];
+      if (lastMessage.role === "assistant" && lastMessage.content) {
+        setLatestResponse(lastMessage.content);
+        setShowBubble(true);
+        if (bubbleTimeoutRef.current) {
+          clearTimeout(bubbleTimeoutRef.current);
+        }
+      }
+    }
+  }, [messages]);
+
+  // ---- Speech bubble: auto-fade after TTS finishes ----
+  useEffect(() => {
+    if (showBubble && !isPlaying && !isLoading) {
+      bubbleTimeoutRef.current = setTimeout(() => {
+        setShowBubble(false);
+      }, 8000);
+    }
+    return () => {
+      if (bubbleTimeoutRef.current) {
+        clearTimeout(bubbleTimeoutRef.current);
+      }
+    };
+  }, [showBubble, isPlaying, isLoading]);
+
+  // ---- Scroll history panel to bottom ----
+  useEffect(() => {
+    if (isHistoryOpen) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages, isHistoryOpen]);
+
+  // ---- Type mode: submit handler ----
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputValue.trim() || isLoading) return;
-
-    // Stop listening if the user submits while mic is active
-    if (isListening) {
-      stopListening();
-    }
-
     const message = inputValue.trim();
     setInputValue("");
     await sendMessage(message);
   };
 
-  const handleMicToggle = () => {
-    if (isListening) {
-      stopListening();
-    } else {
-      // Clear any previous input when starting fresh recording
-      setInputValue("");
-      startListening();
-    }
-  };
-
-  const toggleMute = () => {
-    setIsMuted(!isMuted);
-    if (!isMuted) {
-      setIsPlaying(false);
-    }
-  };
+  const showActions = isHovering && mode === "idle";
+  const bubbleVisible = showBubble && latestResponse;
 
   return (
     <>
-      {/* Floating Button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className={`chat-widget-button ${isOpen ? "hidden" : ""}`}
-        aria-label="Open chat"
+      {/* Speech Bubble — to the left of the avatar */}
+      <div
+        className={`chat-bubble-arrow fixed bottom-[calc(1.5rem+40px)] right-[calc(1.5rem+140px+1rem)] max-w-[300px] min-w-[100px] p-3.5 pr-6 rounded-2xl rounded-br-sm bg-white/95 dark:bg-neutral-800/95 text-neutral-900 dark:text-neutral-200 shadow-xl backdrop-blur-2xl z-[999] transition-all duration-[400ms] ${bubbleVisible
+            ? "opacity-100 translate-x-0 pointer-events-auto"
+            : "opacity-0 translate-x-3 pointer-events-none"
+          }`}
       >
-        <FontAwesomeIcon icon={faComment} className="text-xl" />
-      </button>
+        <p className="text-[0.85rem] leading-relaxed m-0 max-h-40 overflow-y-auto whitespace-pre-wrap chat-scrollbar">
+          {latestResponse}
+        </p>
+        <button
+          className="absolute -top-2 -right-2 w-[22px] h-[22px] rounded-full border-none cursor-pointer flex items-center justify-center text-[0.55rem] bg-black/55 dark:bg-white/25 text-white hover:bg-black/75 dark:hover:bg-white/45 transition-colors"
+          onClick={() => setShowBubble(false)}
+          aria-label="Dismiss"
+        >
+          <FontAwesomeIcon icon={faTimes} />
+        </button>
+      </div>
 
-      {/* Chat Panel */}
-      <div className={`chat-widget-panel ${isOpen ? "open" : ""}`}>
-        {/* Header */}
-        <div className="chat-widget-header">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-amber-700 dark:from-amber-300 dark:to-amber-500 flex items-center justify-center text-white dark:text-slate-900 font-semibold">
-              S
-            </div>
-            <div>
-              <h3 className="font-semibold text-neutral-900 dark:text-white">
-                Swalih
-              </h3>
-              <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                {isListening
-                  ? "Listening..."
-                  : isLoading
-                    ? "Typing..."
-                    : "Ask me anything!"}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={toggleMute}
-              className="p-2 rounded-full hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
-              aria-label={isMuted ? "Unmute" : "Mute"}
-            >
-              <FontAwesomeIcon
-                icon={isMuted ? faVolumeMute : faVolumeUp}
-                className="text-neutral-600 dark:text-neutral-400"
-              />
-            </button>
-            <button
-              onClick={() => setIsOpen(false)}
-              className="p-2 rounded-full hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
-              aria-label="Close chat"
-            >
-              <FontAwesomeIcon
-                icon={faTimes}
-                className="text-neutral-600 dark:text-neutral-400"
-              />
-            </button>
-          </div>
-        </div>
-
+      {/* Main Widget Container */}
+      <div
+        className="fixed bottom-6 right-6 flex flex-col items-center z-[1000]"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
         {/* Avatar Section */}
-        <div className="chat-widget-avatar">
-          <RiveAvatar
-            className="w-full h-full"
-            alignment={currentAudioData?.alignment}
-            currentTimeMs={currentTime}
-            isPlaying={isPlaying && !isMuted}
-            isListening={isListening}
-          />
-        </div>
-
-        {/* Messages */}
-        <div className="chat-widget-messages">
-          {messages.length === 0 && (
-            <div className="text-center text-neutral-500 dark:text-neutral-400 py-8">
-              <p className="text-sm">👋 Hi! I'm Swalih.</p>
-              <p className="text-xs mt-1">
-                Ask me about my work, projects, or anything else!
-              </p>
-            </div>
+        <div
+          className="relative w-[140px] h-[140px] cursor-pointer rounded-full drop-shadow-lg hover:scale-105 hover:drop-shadow-xl transition-all duration-300"
+          onClick={handleAvatarClick}
+        >
+          {/* Pulsing Ring — visible in talk mode */}
+          {mode === "talk" && (
+            <div
+              className={`absolute -inset-1.5 rounded-full border-[3px] border-transparent pointer-events-none -z-10 ${isListening
+                  ? "chat-ring-listening"
+                  : isPlaying
+                    ? "chat-ring-playing"
+                    : ""
+                }`}
+            />
           )}
-          {messages.map((message) => (
-            <ChatMessage key={message.id} message={message} />
-          ))}
-          {error && (
-            <div className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 rounded-lg p-3 text-sm">
-              {error}
-              <button onClick={clearError} className="ml-2 underline">
-                Dismiss
-              </button>
-            </div>
-          )}
-          <div ref={messagesEndRef} />
-        </div>
 
-        {/* STT Error */}
-        {sttError && (
-          <div className="px-4 py-2 text-xs text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border-t border-red-200 dark:border-red-800">
-            {sttError}
+          {/* Rive Avatar */}
+          <div className="w-full h-full overflow-hidden">
+            <RiveAvatar
+              className="w-full h-full"
+              alignment={currentAudioData?.alignment}
+              currentTimeMs={currentTime}
+              isPlaying={isPlaying}
+              isListening={isListening}
+            />
           </div>
-        )}
 
-        {/* Input */}
-        <form onSubmit={handleSubmit} className="chat-widget-input">
-          <input
-            type="text"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            placeholder={isListening ? "Speak now..." : "Type your message..."}
-            disabled={isLoading || isListening}
-            className="flex-1 bg-transparent outline-none text-neutral-900 dark:text-white placeholder-neutral-500"
-          />
+          {/* Close Button (overlay, top-right) — active modes only */}
+          {mode !== "idle" && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleClose();
+              }}
+              className="absolute top-0.5 right-0.5 w-[30px] h-[30px] rounded-full border-none cursor-pointer flex items-center justify-center text-[0.7rem] bg-red-500/90 text-white shadow-md z-[2] hover:bg-red-600 transition-colors duration-200 chat-pop-in"
+              aria-label="Close"
+            >
+              <FontAwesomeIcon icon={faTimes} />
+            </button>
+          )}
+        </div>
+
+        {/* Action Buttons — fade in below avatar on hover */}
+        <div
+          className={`flex gap-2 mt-3 transition-all duration-300 ${showActions
+              ? "opacity-100 translate-y-0 pointer-events-auto"
+              : "opacity-0 -translate-y-2 pointer-events-none"
+            }`}
+        >
           {isSttSupported && (
             <button
-              type="button"
-              onClick={handleMicToggle}
-              disabled={isLoading}
-              className={`chat-mic-button ${isListening ? "listening" : ""}`}
-              aria-label={isListening ? "Stop recording" : "Start voice input"}
+              onClick={handleTalkClick}
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-full border-none cursor-pointer text-xs font-medium font-[inherit] whitespace-nowrap transition-all duration-200 hover:-translate-y-0.5 bg-gradient-to-br from-amber-600 to-amber-700 dark:from-amber-400 dark:to-amber-500 text-white dark:text-slate-900 shadow-lg"
+              aria-label="Talk to me"
             >
-              <FontAwesomeIcon icon={isListening ? faStop : faMicrophone} />
+              <FontAwesomeIcon icon={faMicrophone} />
+              <span>Talk</span>
             </button>
           )}
           <button
-            type="submit"
-            disabled={isLoading || !inputValue.trim()}
-            className="p-2 rounded-full bg-amber-600 text-white dark:bg-amber-200 dark:text-slate-900 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-amber-700 dark:hover:bg-amber-300 transition-colors"
+            onClick={handleTypeClick}
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-full border-none cursor-pointer text-xs font-medium font-[inherit] whitespace-nowrap transition-all duration-200 hover:-translate-y-0.5 bg-white/90 dark:bg-neutral-800/90 text-neutral-600 dark:text-neutral-300 shadow-md backdrop-blur-sm"
+            aria-label="Type a message"
           >
-            <FontAwesomeIcon icon={faPaperPlane} />
+            <FontAwesomeIcon icon={faKeyboard} />
+            <span>Type</span>
           </button>
-        </form>
+          {messages.length > 0 && (
+            <button
+              onClick={() => {
+                setIsHistoryOpen(true);
+                setIsHovering(false);
+              }}
+              className="flex items-center px-2.5 py-2 rounded-full border-none cursor-pointer text-xs font-medium font-[inherit] transition-all duration-200 hover:-translate-y-0.5 bg-white/90 dark:bg-neutral-800/90 text-neutral-600 dark:text-neutral-300 shadow-md backdrop-blur-sm"
+              aria-label="Chat history"
+            >
+              <FontAwesomeIcon icon={faClockRotateLeft} />
+            </button>
+          )}
+        </div>
+
+        {/* Talk Mode — live transcript */}
+        {mode === "talk" && (
+          <div className="mt-2 max-w-[250px] text-center chat-fade-in-up">
+            {isListening ? (
+              liveTranscript ? (
+                <p className="text-[0.8rem] text-neutral-600 dark:text-neutral-300 bg-white/85 dark:bg-neutral-800/85 px-3.5 py-1.5 rounded-full backdrop-blur-sm shadow-sm m-0 max-h-[60px] overflow-y-auto whitespace-pre-wrap break-words">
+                  {liveTranscript}
+                </p>
+              ) : (
+                <p className="text-xs text-neutral-400 dark:text-neutral-500 m-0">
+                  Listening...
+                </p>
+              )
+            ) : isLoading ? (
+              <p className="text-xs text-neutral-400 dark:text-neutral-500 m-0">
+                <span className="inline-flex gap-1 items-center">
+                  <span
+                    className="w-1.5 h-1.5 bg-current rounded-full animate-bounce"
+                    style={{ animationDelay: "0ms" }}
+                  />
+                  <span
+                    className="w-1.5 h-1.5 bg-current rounded-full animate-bounce"
+                    style={{ animationDelay: "150ms" }}
+                  />
+                  <span
+                    className="w-1.5 h-1.5 bg-current rounded-full animate-bounce"
+                    style={{ animationDelay: "300ms" }}
+                  />
+                </span>
+              </p>
+            ) : null}
+          </div>
+        )}
+
+        {/* Type Mode — compact input */}
+        {mode === "type" && (
+          <form
+            onSubmit={handleSubmit}
+            className="flex items-center gap-2 mt-3 chat-slide-up"
+          >
+            <input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              placeholder="Type your message..."
+              disabled={isLoading}
+              autoFocus
+              className="w-[210px] px-4 py-2.5 rounded-full border border-black/10 dark:border-white/10 bg-white/95 dark:bg-neutral-800/95 text-neutral-900 dark:text-neutral-200 text-sm font-[inherit] outline-none backdrop-blur-sm shadow-md transition-all duration-200 placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:border-amber-600 dark:focus:border-amber-400 focus:shadow-[0_2px_16px_rgba(217,119,6,0.15)] dark:focus:shadow-[0_2px_16px_rgba(251,191,36,0.15)]"
+            />
+            <button
+              type="submit"
+              disabled={isLoading || !inputValue.trim()}
+              className="w-9 h-9 min-w-[36px] rounded-full border-none cursor-pointer flex items-center justify-center text-sm bg-gradient-to-br from-amber-600 to-amber-700 dark:from-amber-400 dark:to-amber-500 text-white dark:text-slate-900 shadow-md transition-all duration-200 hover:scale-110 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              aria-label="Send message"
+            >
+              <FontAwesomeIcon icon={faPaperPlane} />
+            </button>
+          </form>
+        )}
+
+        {/* Error Toast */}
+        {(error || sttError) && mode !== "idle" && (
+          <div className="mt-2 max-w-[260px] px-3 py-2 rounded-xl bg-red-100/90 dark:bg-red-950/35 border border-red-300/25 dark:border-red-500/30 backdrop-blur-sm flex items-center gap-2 chat-fade-in-up">
+            <p className="text-xs text-red-600 dark:text-red-300 m-0 flex-1 leading-snug">
+              {error || sttError}
+            </p>
+            <button
+              onClick={clearError}
+              className="text-[0.65rem] text-red-600 dark:text-red-300 bg-transparent border-none cursor-pointer underline whitespace-nowrap font-[inherit]"
+            >
+              Dismiss
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* History Backdrop */}
+      {isHistoryOpen && (
+        <div
+          className="fixed inset-0 bg-black/25 dark:bg-black/45 backdrop-blur-[2px] z-[1001] chat-fade-in"
+          onClick={() => setIsHistoryOpen(false)}
+        />
+      )}
+
+      {/* History Panel */}
+      <div
+        className={`fixed top-0 right-0 w-[360px] max-w-full h-screen bg-white/[0.98] dark:bg-neutral-900/[0.98] backdrop-blur-xl shadow-[-4px_0_24px_rgba(0,0,0,0.08)] dark:shadow-[-4px_0_24px_rgba(0,0,0,0.3)] flex flex-col z-[1002] transition-transform duration-[350ms] ease-[cubic-bezier(0.4,0,0.2,1)] ${isHistoryOpen ? "translate-x-0" : "translate-x-full"
+          }`}
+      >
+        <div className="flex items-center justify-between px-4 py-5 border-b border-black/[0.06] dark:border-white/[0.06]">
+          <h3 className="text-base font-semibold text-neutral-900 dark:text-neutral-200 m-0">
+            Conversation
+          </h3>
+          <button
+            onClick={() => setIsHistoryOpen(false)}
+            className="w-[34px] h-[34px] rounded-full border-none cursor-pointer flex items-center justify-center text-sm bg-black/[0.04] dark:bg-white/[0.06] text-neutral-600 dark:text-neutral-400 hover:bg-black/[0.08] dark:hover:bg-white/[0.12] transition-colors"
+            aria-label="Close history"
+          >
+            <FontAwesomeIcon icon={faTimes} />
+          </button>
+        </div>
+        <div className="flex-1 overflow-y-auto p-4 chat-scrollbar">
+          {messages.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-[200px] text-neutral-400 dark:text-neutral-500 text-center">
+              <p className="text-sm font-medium">No messages yet</p>
+              <p className="text-sm mt-1">Start a conversation!</p>
+            </div>
+          ) : (
+            messages.map((message) => (
+              <ChatMessage key={message.id} message={message} />
+            ))
+          )}
+          <div ref={messagesEndRef} />
+        </div>
       </div>
 
       {/* Audio Player (hidden) */}
-      {!isMuted && (
-        <AudioPlayer
-          audioBase64={currentAudioData?.base64 || null}
-          isPlaying={isPlaying}
-          onTimeUpdate={setCurrentTime}
-          onEnded={() => setIsPlaying(false)}
-          onPlay={() => setIsPlaying(true)}
-        />
-      )}
+      <AudioPlayer
+        audioBase64={currentAudioData?.base64 || null}
+        isPlaying={isPlaying}
+        onTimeUpdate={setCurrentTime}
+        onEnded={() => setIsPlaying(false)}
+        onPlay={() => setIsPlaying(true)}
+      />
     </>
   );
 };
