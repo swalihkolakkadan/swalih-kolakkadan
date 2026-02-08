@@ -1,7 +1,8 @@
-import React, { Suspense, lazy } from "react";
+import React, { Suspense, lazy, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
 import { ChatWidget } from "./components/chatbot";
+import { wakeUpBackend } from "./services/chatService";
 
 // Lazy load pages for better performance (code splitting)
 const IndexPage = lazy(() => import("./pages/index"));
@@ -21,6 +22,11 @@ const PageLoader = () => (
 );
 
 function App() {
+  // Wake up the backend server on app load (Render.com free tier goes to sleep)
+  useEffect(() => {
+    wakeUpBackend();
+  }, []);
+
   return (
     <>
       <Routes>

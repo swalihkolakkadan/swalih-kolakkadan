@@ -1,13 +1,21 @@
-/**
- * Chat service for communicating with the backend API
- */
 import type { PhonemeAlignment } from '../types/chatTypes';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
-/**
- * Generate a unique session ID for the user
- */
+
+export async function wakeUpBackend(): Promise<void> {
+  try {
+    await fetch(`${API_URL}/api/health`, {
+      method: 'GET',
+    });
+    console.log('Backend warmed up successfully');
+  } catch (error) {
+    // Silently ignore errors - this is just a warm-up call
+    console.log('Backend warm-up initiated (may take a moment to wake up)');
+  }
+}
+
+
 export function getSessionId(): string {
   let sessionId = sessionStorage.getItem('chat_session_id');
   if (!sessionId) {
@@ -23,9 +31,7 @@ export interface ChatApiResponse {
   alignment?: PhonemeAlignment;
 }
 
-/**
- * Send a chat message and get complete response
- */
+
 export async function sendMessage(message: string): Promise<ChatApiResponse> {
   const sessionId = getSessionId();
   
