@@ -180,9 +180,9 @@ const ChatWidget: React.FC = () => {
     <>
       {/* Speech Bubble — to the left of the avatar */}
       <div
-        className={`chat-bubble-arrow fixed bottom-[calc(1.5rem+40px)] right-[calc(1.5rem+140px+1rem)] max-w-[300px] min-w-[100px] p-3.5 pr-6 rounded-2xl rounded-br-sm bg-white/95 dark:bg-neutral-800/95 text-neutral-900 dark:text-neutral-200 shadow-xl backdrop-blur-2xl z-[999] transition-all duration-[400ms] ${bubbleVisible
-            ? "opacity-100 translate-x-0 pointer-events-auto"
-            : "opacity-0 translate-x-3 pointer-events-none"
+        className={`chat-bubble-arrow fixed bottom-[80px] right-[calc(1.5rem+220px+1rem)] max-w-[300px] min-w-[100px] p-3.5 pr-6 rounded-2xl rounded-br-sm bg-white/95 dark:bg-neutral-800/95 text-neutral-900 dark:text-neutral-200 shadow-xl backdrop-blur-2xl z-[999] transition-all duration-[400ms] ${bubbleVisible
+          ? "opacity-100 translate-x-0 pointer-events-auto"
+          : "opacity-0 translate-x-3 pointer-events-none"
           }`}
       >
         <p className="text-[0.85rem] leading-relaxed m-0 max-h-40 overflow-y-auto whitespace-pre-wrap chat-scrollbar">
@@ -197,97 +197,30 @@ const ChatWidget: React.FC = () => {
         </button>
       </div>
 
-      {/* Main Widget Container */}
+      {/* Main Widget Container — avatar at absolute bottom, everything stacks above */}
       <div
-        className="fixed bottom-6 right-6 flex flex-col items-center z-[1000]"
+        className="fixed bottom-0 right-6 flex flex-col items-center z-[1000]"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        {/* Avatar Section */}
-        <div
-          className="relative w-[140px] h-[140px] cursor-pointer rounded-full drop-shadow-lg hover:scale-105 hover:drop-shadow-xl transition-all duration-300"
-          onClick={handleAvatarClick}
-        >
-          {/* Pulsing Ring — visible in talk mode */}
-          {mode === "talk" && (
-            <div
-              className={`absolute -inset-1.5 rounded-full border-[3px] border-transparent pointer-events-none -z-10 ${isListening
-                  ? "chat-ring-listening"
-                  : isPlaying
-                    ? "chat-ring-playing"
-                    : ""
-                }`}
-            />
-          )}
-
-          {/* Rive Avatar */}
-          <div className="w-full h-full overflow-hidden">
-            <RiveAvatar
-              className="w-full h-full"
-              alignment={currentAudioData?.alignment}
-              currentTimeMs={currentTime}
-              isPlaying={isPlaying}
-              isListening={isListening}
-            />
+        {/* Error Toast — topmost when visible */}
+        {(error || sttError) && mode !== "idle" && (
+          <div className="mb-2 max-w-[260px] px-3 py-2 rounded-xl bg-red-100/90 dark:bg-red-950/35 border border-red-300/25 dark:border-red-500/30 backdrop-blur-sm flex items-center gap-2 chat-fade-in-up">
+            <p className="text-xs text-red-600 dark:text-red-300 m-0 flex-1 leading-snug">
+              {error || sttError}
+            </p>
+            <button
+              onClick={clearError}
+              className="text-[0.65rem] text-red-600 dark:text-red-300 bg-transparent border-none cursor-pointer underline whitespace-nowrap font-[inherit]"
+            >
+              Dismiss
+            </button>
           </div>
+        )}
 
-          {/* Close Button (overlay, top-right) — active modes only */}
-          {mode !== "idle" && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleClose();
-              }}
-              className="absolute top-0.5 right-0.5 w-[30px] h-[30px] rounded-full border-none cursor-pointer flex items-center justify-center text-[0.7rem] bg-red-500/90 text-white shadow-md z-[2] hover:bg-red-600 transition-colors duration-200 chat-pop-in"
-              aria-label="Close"
-            >
-              <FontAwesomeIcon icon={faTimes} />
-            </button>
-          )}
-        </div>
-
-        {/* Action Buttons — fade in below avatar on hover */}
-        <div
-          className={`flex gap-2 mt-3 transition-all duration-300 ${showActions
-              ? "opacity-100 translate-y-0 pointer-events-auto"
-              : "opacity-0 -translate-y-2 pointer-events-none"
-            }`}
-        >
-          {isSttSupported && (
-            <button
-              onClick={handleTalkClick}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-full border-none cursor-pointer text-xs font-medium font-[inherit] whitespace-nowrap transition-all duration-200 hover:-translate-y-0.5 bg-gradient-to-br from-amber-600 to-amber-700 dark:from-amber-400 dark:to-amber-500 text-white dark:text-slate-900 shadow-lg"
-              aria-label="Talk to me"
-            >
-              <FontAwesomeIcon icon={faMicrophone} />
-              <span>Talk</span>
-            </button>
-          )}
-          <button
-            onClick={handleTypeClick}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-full border-none cursor-pointer text-xs font-medium font-[inherit] whitespace-nowrap transition-all duration-200 hover:-translate-y-0.5 bg-white/90 dark:bg-neutral-800/90 text-neutral-600 dark:text-neutral-300 shadow-md backdrop-blur-sm"
-            aria-label="Type a message"
-          >
-            <FontAwesomeIcon icon={faKeyboard} />
-            <span>Type</span>
-          </button>
-          {messages.length > 0 && (
-            <button
-              onClick={() => {
-                setIsHistoryOpen(true);
-                setIsHovering(false);
-              }}
-              className="flex items-center px-2.5 py-2 rounded-full border-none cursor-pointer text-xs font-medium font-[inherit] transition-all duration-200 hover:-translate-y-0.5 bg-white/90 dark:bg-neutral-800/90 text-neutral-600 dark:text-neutral-300 shadow-md backdrop-blur-sm"
-              aria-label="Chat history"
-            >
-              <FontAwesomeIcon icon={faClockRotateLeft} />
-            </button>
-          )}
-        </div>
-
-        {/* Talk Mode — live transcript */}
+        {/* Talk Mode — live transcript (above buttons) */}
         {mode === "talk" && (
-          <div className="mt-2 max-w-[250px] text-center chat-fade-in-up">
+          <div className="mb-2 max-w-[250px] text-center chat-fade-in-up">
             {isListening ? (
               liveTranscript ? (
                 <p className="text-[0.8rem] text-neutral-600 dark:text-neutral-300 bg-white/85 dark:bg-neutral-800/85 px-3.5 py-1.5 rounded-full backdrop-blur-sm shadow-sm m-0 max-h-[60px] overflow-y-auto whitespace-pre-wrap break-words">
@@ -319,46 +252,122 @@ const ChatWidget: React.FC = () => {
           </div>
         )}
 
-        {/* Type Mode — compact input */}
-        {mode === "type" && (
-          <form
-            onSubmit={handleSubmit}
-            className="flex items-center gap-2 mt-3 chat-slide-up"
-          >
-            <input
-              type="text"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Type your message..."
-              disabled={isLoading}
-              autoFocus
-              className="w-[210px] px-4 py-2.5 rounded-full border border-black/10 dark:border-white/10 bg-white/95 dark:bg-neutral-800/95 text-neutral-900 dark:text-neutral-200 text-sm font-[inherit] outline-none backdrop-blur-sm shadow-md transition-all duration-200 placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:border-amber-600 dark:focus:border-amber-400 focus:shadow-[0_2px_16px_rgba(217,119,6,0.15)] dark:focus:shadow-[0_2px_16px_rgba(251,191,36,0.15)]"
+        {/* Avatar Section — sits at the absolute bottom */}
+        <div
+          className="relative w-[220px] h-[220px] cursor-pointer drop-shadow-lg hover:scale-105 hover:drop-shadow-xl transition-all duration-300"
+          onClick={handleAvatarClick}
+        >
+          {/* Pulsing Ring — visible in talk mode */}
+          {mode === "talk" && (
+            <div
+              className={`absolute -inset-1.5 rounded-full border-[3px] border-transparent pointer-events-none -z-10 ${isListening
+                ? "chat-ring-listening"
+                : isPlaying
+                  ? "chat-ring-playing"
+                  : ""
+                }`}
             />
-            <button
-              type="submit"
-              disabled={isLoading || !inputValue.trim()}
-              className="w-9 h-9 min-w-[36px] rounded-full border-none cursor-pointer flex items-center justify-center text-sm bg-gradient-to-br from-amber-600 to-amber-700 dark:from-amber-400 dark:to-amber-500 text-white dark:text-slate-900 shadow-md transition-all duration-200 hover:scale-110 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-              aria-label="Send message"
-            >
-              <FontAwesomeIcon icon={faPaperPlane} />
-            </button>
-          </form>
-        )}
+          )}
 
-        {/* Error Toast */}
-        {(error || sttError) && mode !== "idle" && (
-          <div className="mt-2 max-w-[260px] px-3 py-2 rounded-xl bg-red-100/90 dark:bg-red-950/35 border border-red-300/25 dark:border-red-500/30 backdrop-blur-sm flex items-center gap-2 chat-fade-in-up">
-            <p className="text-xs text-red-600 dark:text-red-300 m-0 flex-1 leading-snug">
-              {error || sttError}
-            </p>
-            <button
-              onClick={clearError}
-              className="text-[0.65rem] text-red-600 dark:text-red-300 bg-transparent border-none cursor-pointer underline whitespace-nowrap font-[inherit]"
-            >
-              Dismiss
-            </button>
+          {/* Rive Avatar */}
+          <div className="w-full h-full overflow-hidden">
+            <RiveAvatar
+              className="w-full h-full"
+              alignment={currentAudioData?.alignment}
+              currentTimeMs={currentTime}
+              isPlaying={isPlaying}
+              isListening={isListening}
+            />
           </div>
-        )}
+
+          {/* Close Button (overlay, top-right) — active modes only */}
+          {mode !== "idle" && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleClose();
+              }}
+              className="absolute top-1 right-1 w-[30px] h-[30px] rounded-full border-none cursor-pointer flex items-center justify-center text-[0.7rem] bg-red-500/90 text-white shadow-md z-[2] hover:bg-red-600 transition-colors duration-200 chat-pop-in"
+              aria-label="Close"
+            >
+              <FontAwesomeIcon icon={faTimes} />
+            </button>
+          )}
+
+          {/* Action Buttons — icon-only, float at bottom of avatar */}
+          <div
+            className={`absolute top-3/4 left-1/2 -translate-x-1/2 flex gap-2 z-[3] transition-all duration-300 ${showActions
+              ? "opacity-100 translate-y-0 pointer-events-auto"
+              : "opacity-0 -translate-y-1 pointer-events-none"
+              }`}
+          >
+            {isSttSupported && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleTalkClick();
+                }}
+                className="w-9 h-9 rounded-full border-none cursor-pointer flex items-center justify-center text-sm bg-gradient-to-br from-amber-600 to-amber-700 dark:from-amber-400 dark:to-amber-500 text-white dark:text-slate-900 shadow-lg transition-all duration-200 hover:scale-110 hover:shadow-xl"
+                aria-label="Talk to me"
+              >
+                <FontAwesomeIcon icon={faMicrophone} />
+              </button>
+            )}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleTypeClick();
+              }}
+              className="w-9 h-9 rounded-full border-none cursor-pointer flex items-center justify-center text-sm bg-white/90 dark:bg-neutral-800/90 text-neutral-600 dark:text-neutral-300 shadow-lg backdrop-blur-sm transition-all duration-200 hover:scale-110 hover:shadow-xl hover:bg-white dark:hover:bg-neutral-700"
+              aria-label="Type a message"
+            >
+              <FontAwesomeIcon icon={faKeyboard} />
+            </button>
+            {messages.length > 0 && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsHistoryOpen(true);
+                  setIsHovering(false);
+                }}
+                className="w-9 h-9 rounded-full border-none cursor-pointer flex items-center justify-center text-sm bg-white/90 dark:bg-neutral-800/90 text-neutral-600 dark:text-neutral-300 shadow-lg backdrop-blur-sm transition-all duration-200 hover:scale-110 hover:shadow-xl hover:bg-white dark:hover:bg-neutral-700"
+                aria-label="Chat history"
+              >
+                <FontAwesomeIcon icon={faClockRotateLeft} />
+              </button>
+            )}
+          </div>
+
+          {/* Type Mode — compact input at same position as buttons */}
+          {mode === "type" && (
+            <form
+              onSubmit={(e) => {
+                e.stopPropagation();
+                handleSubmit(e);
+              }}
+              onClick={(e) => e.stopPropagation()}
+              className="absolute top-3/4  flex items-center gap-1.5 z-[3] chat-pop-in"
+            >
+              <input
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                placeholder="Message..."
+                disabled={isLoading}
+                autoFocus
+                className="w-[140px] px-3 py-1.5 rounded-full border border-black/10 dark:border-white/10 bg-white/95 dark:bg-neutral-800/95 text-neutral-900 dark:text-neutral-200 text-xs font-[inherit] outline-none backdrop-blur-sm shadow-lg transition-all duration-200 placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:border-amber-600 dark:focus:border-amber-400"
+              />
+              <button
+                type="submit"
+                disabled={isLoading || !inputValue.trim()}
+                className="w-7 h-7 min-w-[28px] rounded-full border-none cursor-pointer flex items-center justify-center text-xs bg-gradient-to-br from-amber-600 to-amber-700 dark:from-amber-400 dark:to-amber-500 text-white dark:text-slate-900 shadow-lg transition-all duration-200 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
+                aria-label="Send message"
+              >
+                <FontAwesomeIcon icon={faPaperPlane} />
+              </button>
+            </form>
+          )}
+        </div>
       </div>
 
       {/* History Backdrop */}

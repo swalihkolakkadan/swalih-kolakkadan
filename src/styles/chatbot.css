@@ -109,7 +109,7 @@
   .chat-bubble-arrow {
     right: 1rem !important;
     left: 1rem !important;
-    bottom: calc(1rem + 100px + 3.5rem) !important;
+    bottom: calc(130px + 3.5rem) !important;
     max-width: calc(100vw - 2rem) !important;
     border-bottom-right-radius: 1rem !important;
   }
