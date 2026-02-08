@@ -70,7 +70,7 @@ const ChatWidget: React.FC = () => {
         {/* Header */}
         <div className="chat-widget-header">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-amber-700 dark:from-amber-300 dark:to-amber-500 flex items-center justify-center text-white dark:text-slate-900 font-semibold">
               S
             </div>
             <div>
@@ -153,7 +153,7 @@ const ChatWidget: React.FC = () => {
           <button
             type="submit"
             disabled={isLoading || !inputValue.trim()}
-            className="p-2 rounded-full bg-blue-600 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-700 transition-colors"
+            className="p-2 rounded-full bg-amber-600 text-white dark:bg-amber-200 dark:text-slate-900 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-amber-700 dark:hover:bg-amber-300 transition-colors"
           >
             <FontAwesomeIcon icon={faPaperPlane} />
           </button>

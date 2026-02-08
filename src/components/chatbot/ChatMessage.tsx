@@ -13,7 +13,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
       <div
         className={`max-w-[80%] rounded-2xl px-4 py-2 ${
           isUser
-            ? "bg-blue-600 text-white rounded-br-md"
+            ? "bg-amber-600 text-white dark:bg-amber-200 dark:text-slate-900 rounded-br-md"
             : "bg-neutral-200 dark:bg-neutral-700 text-neutral-900 dark:text-white rounded-bl-md"
         }`}
       >
