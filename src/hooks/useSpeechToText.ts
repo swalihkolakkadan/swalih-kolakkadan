@@ -64,6 +64,9 @@ export interface UseSpeechToTextReturn {
   resetTranscript: () => void;
 }
 
+/** How long to wait after the last speech before auto-stopping (ms) */
+const SILENCE_TIMEOUT_MS = 1000;
+
 const ERROR_MESSAGES: Record<string, string> = {
   'not-allowed': 'Microphone access denied. Please allow mic access in your browser settings.',
   'no-speech': 'No speech detected. Please try again.',
@@ -82,6 +85,41 @@ export function useSpeechToText(): UseSpeechToTextReturn {
 
   const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
   const isListeningRef = useRef(false);
+  const silenceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  /** Track whether we've received any speech at all in this session */
+  const hasReceivedSpeechRef = useRef(false);
+
+  /**
+   * Clear the silence timer.
+   */
+  const clearSilenceTimer = useCallback(() => {
+    if (silenceTimerRef.current) {
+      clearTimeout(silenceTimerRef.current);
+      silenceTimerRef.current = null;
+    }
+  }, []);
+
+  /**
+   * Reset the silence timer. After SILENCE_TIMEOUT_MS of no new speech,
+   * auto-stop listening so the message can be sent.
+   */
+  const resetSilenceTimer = useCallback(() => {
+    clearSilenceTimer();
+    silenceTimerRef.current = setTimeout(() => {
+      // Only auto-stop if we actually received some speech
+      if (isListeningRef.current && hasReceivedSpeechRef.current) {
+        isListeningRef.current = false;
+        setIsListening(false);
+        if (recognitionRef.current) {
+          try {
+            recognitionRef.current.stop();
+          } catch {
+            // ignore
+          }
+        }
+      }
+    }, SILENCE_TIMEOUT_MS);
+  }, [clearSilenceTimer]);
 
   /**
    * Start listening. Creates a fresh SpeechRecognition instance each time
@@ -100,6 +138,8 @@ export function useSpeechToText(): UseSpeechToTextReturn {
       }
     }
 
+    clearSilenceTimer();
+    hasReceivedSpeechRef.current = false;
     setError(null);
     setTranscript('');
     setFinalTranscript('');
@@ -130,6 +170,10 @@ export function useSpeechToText(): UseSpeechToTextReturn {
         }
       }
 
+      // We got speech — mark it and reset the silence timer
+      hasReceivedSpeechRef.current = true;
+      resetSilenceTimer();
+
       if (final) {
         setFinalTranscript(prev => (prev + ' ' + final).trim());
         setTranscript('');
@@ -140,26 +184,33 @@ export function useSpeechToText(): UseSpeechToTextReturn {
 
     recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
       const message = ERROR_MESSAGES[event.error] ?? `Speech recognition error: ${event.error}`;
-      // Don't show error for intentional aborts
-      if (event.error !== 'aborted') {
+
+      // Don't show error for intentional aborts or no-speech (we handle silence ourselves)
+      if (event.error !== 'aborted' && event.error !== 'no-speech') {
         setError(message);
       }
+
       // 'not-allowed' and 'audio-capture' are fatal — stop listening
       if (event.error === 'not-allowed' || event.error === 'audio-capture') {
+        clearSilenceTimer();
         isListeningRef.current = false;
         setIsListening(false);
       }
     };
 
     recognition.onend = () => {
-      // The browser may auto-stop (e.g., after silence). If we still intend
-      // to be listening (user hasn't pressed stop), restart.
-      // But don't restart if there was a fatal error.
+      // The browser may auto-stop (e.g., after silence or internal timeout).
+      // If we still intend to be listening, restart to keep the mic alive.
+      // Our own silence timer handles the actual end-of-speech detection.
       if (isListeningRef.current) {
-        // User is still expecting to be listened to — stop gracefully
-        // instead of auto-restarting endlessly.
-        isListeningRef.current = false;
-        setIsListening(false);
+        try {
+          recognition.start();
+        } catch {
+          // If restart fails, stop gracefully
+          clearSilenceTimer();
+          isListeningRef.current = false;
+          setIsListening(false);
+        }
       }
     };
 
@@ -172,12 +223,13 @@ export function useSpeechToText(): UseSpeechToTextReturn {
       setIsListening(false);
       isListeningRef.current = false;
     }
-  }, []);
+  }, [clearSilenceTimer, resetSilenceTimer]);
 
   /**
    * Stop listening and commit whatever transcript we have.
    */
   const stopListening = useCallback(() => {
+    clearSilenceTimer();
     isListeningRef.current = false;
     setIsListening(false);
 
@@ -188,7 +240,7 @@ export function useSpeechToText(): UseSpeechToTextReturn {
         // ignore
       }
     }
-  }, []);
+  }, [clearSilenceTimer]);
 
   /**
    * Reset all transcript state.
@@ -202,6 +254,7 @@ export function useSpeechToText(): UseSpeechToTextReturn {
   // Clean up on unmount
   useEffect(() => {
     return () => {
+      clearSilenceTimer();
       if (recognitionRef.current) {
         try {
           recognitionRef.current.abort();
@@ -210,7 +263,7 @@ export function useSpeechToText(): UseSpeechToTextReturn {
         }
       }
     };
-  }, []);
+  }, [clearSilenceTimer]);
 
   return {
     isSupported,

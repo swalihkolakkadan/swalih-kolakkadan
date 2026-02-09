@@ -18,13 +18,13 @@ type Mode = "idle" | "talk" | "type";
 
 const ChatWidget: React.FC = () => {
   const [mode, setMode] = useState<Mode>("idle");
-  const [isHovering, setIsHovering] = useState(false);
+  // isHovering state removed
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [showBubble, setShowBubble] = useState(false);
   const [latestResponse, setLatestResponse] = useState("");
   const [inputValue, setInputValue] = useState("");
 
-  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // hoverTimeoutRef removed
   const bubbleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -55,7 +55,7 @@ const ChatWidget: React.FC = () => {
   // Cleanup timeouts on unmount
   useEffect(() => {
     return () => {
-      if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+      // hoverTimeoutRef cleanup removed
       if (bubbleTimeoutRef.current) clearTimeout(bubbleTimeoutRef.current);
     };
   }, []);
@@ -63,38 +63,22 @@ const ChatWidget: React.FC = () => {
   // Live transcript for display in talk mode
   const liveTranscript = (finalTranscript + " " + transcript).trim();
 
-  // ---- Hover handlers ----
-  const handleMouseEnter = () => {
-    if (hoverTimeoutRef.current) {
-      clearTimeout(hoverTimeoutRef.current);
-      hoverTimeoutRef.current = null;
-    }
-    setIsHovering(true);
-  };
-
-  const handleMouseLeave = () => {
-    hoverTimeoutRef.current = setTimeout(() => {
-      setIsHovering(false);
-    }, 400);
-  };
+  // Hover handlers removed
 
   // Mobile: tap avatar to toggle action buttons
   const handleAvatarClick = () => {
-    if (mode === "idle") {
-      setIsHovering((prev) => !prev);
-    }
+    // No-op for now, or could trigger something else.
+    // Previously toggled hover state.
   };
 
   // ---- Mode handlers ----
   const handleTalkClick = () => {
     setMode("talk");
-    setIsHovering(false);
     startListening();
   };
 
   const handleTypeClick = () => {
     setMode("type");
-    setIsHovering(false);
   };
 
   const handleClose = () => {
@@ -173,17 +157,18 @@ const ChatWidget: React.FC = () => {
     await sendMessage(message);
   };
 
-  const showActions = isHovering && mode === "idle";
+  const showActions = mode === "idle";
   const bubbleVisible = showBubble && latestResponse;
 
   return (
     <>
       {/* Speech Bubble — to the left of the avatar */}
       <div
-        className={`chat-bubble-arrow fixed bottom-[80px] right-[calc(1.5rem+220px+1rem)] max-w-[300px] min-w-[100px] p-3.5 pr-6 rounded-2xl rounded-br-sm bg-white/95 dark:bg-neutral-800/95 text-neutral-900 dark:text-neutral-200 shadow-xl backdrop-blur-2xl z-[999] transition-all duration-[400ms] ${bubbleVisible
-          ? "opacity-100 translate-x-0 pointer-events-auto"
-          : "opacity-0 translate-x-3 pointer-events-none"
-          }`}
+        className={`chat-bubble-arrow fixed bottom-[180px] md:bottom-[80px] right-4 left-4 md:left-auto md:right-[calc(1.5rem+220px+1rem)] w-auto max-w-[360px] md:w-max mx-auto md:mx-0 min-w-[100px] p-3.5 pr-6 rounded-2xl rounded-br-sm bg-white/95 dark:bg-neutral-800/95 text-neutral-900 dark:text-neutral-200 shadow-xl backdrop-blur-2xl z-[999] transition-all duration-[400ms] ${
+          bubbleVisible
+            ? "opacity-100 translate-x-0 pointer-events-auto"
+            : "opacity-0 translate-x-3 pointer-events-none"
+        }`}
       >
         <p className="text-[0.85rem] leading-relaxed m-0 max-h-40 overflow-y-auto whitespace-pre-wrap chat-scrollbar">
           {latestResponse}
@@ -199,9 +184,8 @@ const ChatWidget: React.FC = () => {
 
       {/* Main Widget Container — avatar at absolute bottom, everything stacks above */}
       <div
-        className="fixed bottom-0 right-6 flex flex-col items-center z-[1000]"
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        className="fixed bottom-0 right-2 md:right-6 flex flex-col items-center z-[1000]"
+        // onMouseEnter/Leave removed
       >
         {/* Error Toast — topmost when visible */}
         {(error || sttError) && mode !== "idle" && (
@@ -254,18 +238,19 @@ const ChatWidget: React.FC = () => {
 
         {/* Avatar Section — sits at the absolute bottom */}
         <div
-          className="relative w-[220px] h-[220px] cursor-pointer drop-shadow-lg hover:scale-105 hover:drop-shadow-xl transition-all duration-300"
+          className="relative w-[160px] h-[160px] md:w-[220px] md:h-[220px] cursor-pointer drop-shadow-lg hover:scale-105 hover:drop-shadow-xl transition-all duration-300"
           onClick={handleAvatarClick}
         >
           {/* Pulsing Ring — visible in talk mode */}
           {mode === "talk" && (
             <div
-              className={`absolute -inset-1.5 rounded-full border-[3px] border-transparent pointer-events-none -z-10 ${isListening
-                ? "chat-ring-listening"
-                : isPlaying
-                  ? "chat-ring-playing"
-                  : ""
-                }`}
+              className={`absolute -inset-1.5 rounded-full border-[3px] border-transparent pointer-events-none -z-10 ${
+                isListening
+                  ? "chat-ring-listening"
+                  : isPlaying
+                    ? "chat-ring-playing"
+                    : ""
+              }`}
             />
           )}
 
@@ -296,10 +281,11 @@ const ChatWidget: React.FC = () => {
 
           {/* Action Buttons — icon-only, float at bottom of avatar */}
           <div
-            className={`absolute top-3/4 left-1/2 -translate-x-1/2 flex gap-2 z-[3] transition-all duration-300 ${showActions
-              ? "opacity-100 translate-y-0 pointer-events-auto"
-              : "opacity-0 -translate-y-1 pointer-events-none"
-              }`}
+            className={`absolute top-3/4 left-1/2 -translate-x-1/2 flex gap-2 z-[3] transition-all duration-300 ${
+              showActions
+                ? "opacity-100 translate-y-0 pointer-events-auto"
+                : "opacity-0 -translate-y-1 pointer-events-none"
+            }`}
           >
             {isSttSupported && (
               <button
@@ -307,7 +293,7 @@ const ChatWidget: React.FC = () => {
                   e.stopPropagation();
                   handleTalkClick();
                 }}
-                className="w-9 h-9 rounded-full border-none cursor-pointer flex items-center justify-center text-sm bg-gradient-to-br from-amber-600 to-amber-700 dark:from-amber-400 dark:to-amber-500 text-white dark:text-slate-900 shadow-lg transition-all duration-200 hover:scale-110 hover:shadow-xl"
+                className="w-8 h-8 md:w-9 md:h-9 rounded-full border-none cursor-pointer flex items-center justify-center text-sm bg-gradient-to-br from-amber-600 to-amber-700 dark:from-amber-400 dark:to-amber-500 text-white dark:text-slate-900 shadow-lg transition-all duration-200 hover:scale-110 hover:shadow-xl"
                 aria-label="Talk to me"
               >
                 <FontAwesomeIcon icon={faMicrophone} />
@@ -318,7 +304,7 @@ const ChatWidget: React.FC = () => {
                 e.stopPropagation();
                 handleTypeClick();
               }}
-              className="w-9 h-9 rounded-full border-none cursor-pointer flex items-center justify-center text-sm bg-white/90 dark:bg-neutral-800/90 text-neutral-600 dark:text-neutral-300 shadow-lg backdrop-blur-sm transition-all duration-200 hover:scale-110 hover:shadow-xl hover:bg-white dark:hover:bg-neutral-700"
+              className="w-8 h-8 md:w-9 md:h-9 rounded-full border-none cursor-pointer flex items-center justify-center text-sm bg-white/90 dark:bg-neutral-800/90 text-neutral-600 dark:text-neutral-300 shadow-lg backdrop-blur-sm transition-all duration-200 hover:scale-110 hover:shadow-xl hover:bg-white dark:hover:bg-neutral-700"
               aria-label="Type a message"
             >
               <FontAwesomeIcon icon={faKeyboard} />
@@ -328,9 +314,8 @@ const ChatWidget: React.FC = () => {
                 onClick={(e) => {
                   e.stopPropagation();
                   setIsHistoryOpen(true);
-                  setIsHovering(false);
                 }}
-                className="w-9 h-9 rounded-full border-none cursor-pointer flex items-center justify-center text-sm bg-white/90 dark:bg-neutral-800/90 text-neutral-600 dark:text-neutral-300 shadow-lg backdrop-blur-sm transition-all duration-200 hover:scale-110 hover:shadow-xl hover:bg-white dark:hover:bg-neutral-700"
+                className="w-8 h-8 md:w-9 md:h-9 rounded-full border-none cursor-pointer flex items-center justify-center text-sm bg-white/90 dark:bg-neutral-800/90 text-neutral-600 dark:text-neutral-300 shadow-lg backdrop-blur-sm transition-all duration-200 hover:scale-110 hover:shadow-xl hover:bg-white dark:hover:bg-neutral-700"
                 aria-label="Chat history"
               >
                 <FontAwesomeIcon icon={faClockRotateLeft} />
@@ -355,12 +340,12 @@ const ChatWidget: React.FC = () => {
                 placeholder="Message..."
                 disabled={isLoading}
                 autoFocus
-                className="w-[140px] px-3 py-1.5 rounded-full border border-black/10 dark:border-white/10 bg-white/95 dark:bg-neutral-800/95 text-neutral-900 dark:text-neutral-200 text-xs font-[inherit] outline-none backdrop-blur-sm shadow-lg transition-all duration-200 placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:border-amber-600 dark:focus:border-amber-400"
+                className="w-[100px] md:w-[140px] px-3 py-1.5 rounded-full border border-black/10 dark:border-white/10 bg-white/95 dark:bg-neutral-800/95 text-neutral-900 dark:text-neutral-200 text-xs font-[inherit] outline-none backdrop-blur-sm shadow-lg transition-all duration-200 placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:border-amber-600 dark:focus:border-amber-400"
               />
               <button
                 type="submit"
                 disabled={isLoading || !inputValue.trim()}
-                className="w-7 h-7 min-w-[28px] rounded-full border-none cursor-pointer flex items-center justify-center text-xs bg-gradient-to-br from-amber-600 to-amber-700 dark:from-amber-400 dark:to-amber-500 text-white dark:text-slate-900 shadow-lg transition-all duration-200 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-6 h-6 md:w-7 md:h-7 min-w-[24px] md:min-w-[28px] rounded-full border-none cursor-pointer flex items-center justify-center text-xs bg-gradient-to-br from-amber-600 to-amber-700 dark:from-amber-400 dark:to-amber-500 text-white dark:text-slate-900 shadow-lg transition-all duration-200 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
                 aria-label="Send message"
               >
                 <FontAwesomeIcon icon={faPaperPlane} />
@@ -380,8 +365,9 @@ const ChatWidget: React.FC = () => {
 
       {/* History Panel */}
       <div
-        className={`fixed top-0 right-0 w-[360px] max-w-full h-screen bg-white/[0.98] dark:bg-neutral-900/[0.98] backdrop-blur-xl shadow-[-4px_0_24px_rgba(0,0,0,0.08)] dark:shadow-[-4px_0_24px_rgba(0,0,0,0.3)] flex flex-col z-[1002] transition-transform duration-[350ms] ease-[cubic-bezier(0.4,0,0.2,1)] ${isHistoryOpen ? "translate-x-0" : "translate-x-full"
-          }`}
+        className={`fixed top-0 right-0 w-[360px] max-w-full h-screen bg-white/[0.98] dark:bg-neutral-900/[0.98] backdrop-blur-xl shadow-[-4px_0_24px_rgba(0,0,0,0.08)] dark:shadow-[-4px_0_24px_rgba(0,0,0,0.3)] flex flex-col z-[1002] transition-transform duration-[350ms] ease-[cubic-bezier(0.4,0,0.2,1)] ${
+          isHistoryOpen ? "translate-x-0" : "translate-x-full"
+        }`}
       >
         <div className="flex items-center justify-between px-4 py-5 border-b border-black/[0.06] dark:border-white/[0.06]">
           <h3 className="text-base font-semibold text-neutral-900 dark:text-neutral-200 m-0">
