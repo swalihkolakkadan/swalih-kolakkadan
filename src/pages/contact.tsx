@@ -34,13 +34,13 @@ const Contact = () => {
         description="Get in touch with Swalih Kolakkadan. Reach out via email, phone, LinkedIn, or WhatsApp for collaboration opportunities."
         pathname="/contact"
       />
-      <div className="col-span-1 flex items-center max-w-lg pt-6">
+      <div className="col-span-1 flex items-center max-w-lg pt-6 lg:pt-20 lg:pb-14">
         <div className="animate-fadeIn">
           <Link className="accent-link pl-6" to="/">
             <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
             Menu
           </Link>
-          <div className="contact text-sm p-6 flex flex-col gap-4 lg:max-h-[32rem] overflow-auto">
+          <div className="contact text-sm p-6 flex flex-col gap-4 overflow-auto">
             <div className="glass-panel-elevated p-4 rounded-2xl">
               <div className="flex gap-4">
                 <div>
@@ -49,12 +49,21 @@ const Contact = () => {
                     src="/images/prof.jpg"
                     alt={profile.name}
                     className="rounded-full w-20 h-20 cursor-pointer transition-transform hover:scale-105"
-                    style={{ boxShadow: '0 4px 16px var(--glass-shadow)' }}
+                    style={{ boxShadow: "0 4px 16px var(--glass-shadow)" }}
                   ></img>
                 </div>
                 <div className="pt-2">
-                  <div className="text-lg font-medium" style={{ color: 'var(--text-primary)' }}> {profile.name}</div>
-                  <div className="text-sm" style={{ color: 'var(--text-muted)' }}>
+                  <div
+                    className="text-lg font-medium"
+                    style={{ color: "var(--text-primary)" }}
+                  >
+                    {" "}
+                    {profile.name}
+                  </div>
+                  <div
+                    className="text-sm"
+                    style={{ color: "var(--text-muted)" }}
+                  >
                     {profile.designation}, {profile.currentCompany}
                   </div>
                 </div>

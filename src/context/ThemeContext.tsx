@@ -29,6 +29,15 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     }
     setTheme(systemTheme);
 
+    // Update match media theme color
+    const metaThemeColor = document.querySelector("meta[name='theme-color']");
+    if (metaThemeColor) {
+      metaThemeColor.setAttribute(
+        "content",
+        systemTheme === "dark" ? "#0f0f11" : "#f0eded",
+      );
+    }
+
     // Listen for system theme changes
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     const handleSystemThemeChange = (e: MediaQueryListEvent) => {
@@ -39,6 +48,13 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
         document.documentElement.classList.remove("dark");
       }
       setTheme(newTheme);
+
+      if (metaThemeColor) {
+        metaThemeColor.setAttribute(
+          "content",
+          newTheme === "dark" ? "#0f0f11" : "#f0eded",
+        );
+      }
     };
 
     mediaQuery.addEventListener("change", handleSystemThemeChange);
@@ -56,6 +72,14 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
       document.documentElement.classList.remove("dark");
     }
     setTheme(newTheme);
+
+    const metaThemeColor = document.querySelector("meta[name='theme-color']");
+    if (metaThemeColor) {
+      metaThemeColor.setAttribute(
+        "content",
+        newTheme === "dark" ? "#0f0f11" : "#f0eded",
+      );
+    }
   };
 
   return (

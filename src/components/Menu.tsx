@@ -6,8 +6,11 @@ import { Link } from "react-router-dom";
 
 const Menu = () => {
   return (
-    <div className="col-span-1 flex flex-grow flex-col lg:justify-center lg:items-center px-6 py-9">
-      <div className="flex flex-wrap gap-6 max-w-96 mt-4 animate-fadeIn" style={{ color: 'var(--text-secondary)' }}>
+    <div className="col-span-1 flex flex-grow h-full flex-col justify-center items-center px-6 py-9">
+      <div
+        className="flex flex-wrap gap-6 max-w-96 mt-4 animate-fadeIn"
+        style={{ color: "var(--text-secondary)" }}
+      >
         <Link to="/projects" className="menu-button">
           <FontAwesomeIcon icon={faFolder} size="2x" />
           <div className="font-medium">Projects</div>

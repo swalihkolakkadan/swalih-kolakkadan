@@ -240,7 +240,7 @@ const ChatWidget: React.FC = () => {
         )}
 
         {/* Talk Mode — live transcript (above buttons) */}
-        {mode === "talk" && (
+        {(mode === "talk" || isLoading) && (
           <div className="mb-2 max-w-[250px] text-center chat-fade-in-up">
             {isListening ? (
               liveTranscript ? (
@@ -299,6 +299,7 @@ const ChatWidget: React.FC = () => {
               currentTimeMs={currentTime}
               isPlaying={isPlaying}
               isListening={isListening}
+              isThinking={isLoading}
             />
           </div>
 

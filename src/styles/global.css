@@ -115,6 +115,11 @@
    Background — single solid color, no gradients
    ======================================== */
 
+html, body {
+  background-color: var(--bg-base);
+  min-height: 100vh;
+}
+
 .bg-mesh {
   background-color: var(--bg-base);
 }
@@ -174,4 +179,13 @@
 
 .home-button:hover {
   transform: translateY(-1px);
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }

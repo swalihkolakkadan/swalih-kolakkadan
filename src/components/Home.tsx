@@ -1,53 +1,14 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React from "react";
 import { profile } from "../utils/constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSun, faMoon } from "@fortawesome/free-regular-svg-icons";
 import { useLocation } from "react-router-dom";
+import { useTheme } from "../context/ThemeContext";
 
 const Home = () => {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const { theme, toggleTheme } = useTheme();
   const location = useLocation();
   const isHomeVisible = location.pathname === "" || location.pathname === "/";
-
-  // Get the system preferred theme
-  const getSystemTheme = useCallback((): "light" | "dark" => {
-    return window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light";
-  }, []);
-
-  // Apply the theme to the document
-  const applyTheme = useCallback((newTheme: "light" | "dark") => {
-    if (newTheme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-    setTheme(newTheme);
-  }, []);
-
-  useEffect(() => {
-    // Always start with system preference (clear any stored override)
-    localStorage.removeItem("theme");
-    applyTheme(getSystemTheme());
-
-    // Listen for system theme changes
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    const handleSystemThemeChange = (e: MediaQueryListEvent) => {
-      applyTheme(e.matches ? "dark" : "light");
-    };
-
-    mediaQuery.addEventListener("change", handleSystemThemeChange);
-    return () => {
-      mediaQuery.removeEventListener("change", handleSystemThemeChange);
-    };
-  }, [applyTheme, getSystemTheme]);
-
-  const toggleTheme = () => {
-    // Toggle theme for current session only (no localStorage persistence)
-    const newTheme = theme === "light" ? "dark" : "light";
-    applyTheme(newTheme);
-  };
   return (
     <div
       className={`${
@@ -55,16 +16,19 @@ const Home = () => {
       } col-span-1 md:flex flex-grow flex-col lg:justify-center items-center px-6 pt-9`}
     >
       <div className="lg:ml-24">
-        <div
-          className="font-semibold pt-6"
-          style={{ color: 'var(--accent)' }}
-        >
+        <div className="font-semibold pt-6" style={{ color: "var(--accent)" }}>
           Hello <span className="inline-block scale-x-[-1]"> 👋</span>
         </div>
-        <div className="font-semibold text-3xl mt-2" style={{ color: 'var(--text-primary)' }}>
+        <div
+          className="font-semibold text-3xl mt-2"
+          style={{ color: "var(--text-primary)" }}
+        >
           {`I'm ${profile.name}`}
         </div>
-        <div className="pt-4 lg:pr-28" style={{ color: 'var(--text-secondary)' }}>
+        <div
+          className="pt-4 lg:pr-28"
+          style={{ color: "var(--text-secondary)" }}
+        >
           {profile.aboutMe}
         </div>
         <div className="mt-8 flex gap-6">

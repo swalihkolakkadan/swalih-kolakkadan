@@ -93,19 +93,28 @@ const Experience = () => {
                 className="block group glass-panel p-4 rounded-2xl hover:cursor-pointer"
               >
                 <div className="md:flex md:items-center md:justify-between">
-                  <div className="font-semibold text-lg transition-colors duration-300" style={{ color: 'var(--text-primary)' }}>
+                  <div
+                    className="font-semibold text-lg transition-colors duration-300"
+                    style={{ color: "var(--text-primary)" }}
+                  >
                     {`${experience.roleName}, ${experience.companyName}`}
                   </div>
-                  <div className="md:text-right text-sm" style={{ color: 'var(--text-muted)' }}>
+                  <div
+                    className="md:text-right text-sm"
+                    style={{ color: "var(--text-muted)" }}
+                  >
                     {getDateValue(experience)}
                     <FontAwesomeIcon
                       icon={faArrowUpRightFromSquare}
                       className="pl-2 transition-transform duration-150 group-hover:scale-110"
-                      style={{ color: 'var(--accent)' }}
+                      style={{ color: "var(--accent)" }}
                     />
                   </div>
                 </div>
-                <div className="mt-1" style={{ color: 'var(--text-secondary)' }}>
+                <div
+                  className="mt-1"
+                  style={{ color: "var(--text-secondary)" }}
+                >
                   {experience.description}
                 </div>
               </Link>

@@ -32,6 +32,8 @@ export interface RivePlayerProps {
   isPlaying?: boolean;
   /** Whether the user's mic is active (avatar shows attentive/listening pose) */
   isListening?: boolean;
+  /** Whether the bot is thinking/loading a response (avatar shows attentive/waiting pose) */
+  isThinking?: boolean;
   /** Rive mouth shape number (0-11). Set by RiveAvatar from Polly visemes. */
   mouthValue?: number;
 }
@@ -42,6 +44,7 @@ const RivePlayer: React.FC<RivePlayerProps> = ({
   artboard,
   isPlaying = true,
   isListening = false,
+  isThinking = false,
   mouthValue,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -139,7 +142,8 @@ const RivePlayer: React.FC<RivePlayerProps> = ({
 
     // Start in idle state
     fireTrigger("idleTrig");
-  }, [rive, fireTrigger]);
+    setMouth(0);
+  }, [rive, fireTrigger, setMouth]);
 
   // ─── 5. Update mouth value via path-based API ─────────────────────────
   useLayoutEffect(() => {
@@ -164,19 +168,20 @@ const RivePlayer: React.FC<RivePlayerProps> = ({
       } else {
         fireTrigger("idleTrig");
       }
+      setMouth(0);
     }
-  }, [rive, isPlaying, fireTrigger]);
+  }, [rive, isPlaying, fireTrigger, setMouth]);
 
-  // ─── 7. Show attentive/listening pose when user's mic is active ──────
+  // ─── 7. Show attentive/listening pose when user's mic is active OR bot is thinking ──────
   useEffect(() => {
     if (!rive || isPlaying) return;
 
-    if (isListening) {
+    if (isListening || isThinking) {
       hasStartedRef.current = true;
       rive.play();
       fireTrigger("waitingTrig");
     }
-  }, [rive, isListening, isPlaying, fireTrigger]);
+  }, [rive, isListening, isThinking, isPlaying, fireTrigger]);
 
   return (
     <div className={`relative ${className || ""}`}>

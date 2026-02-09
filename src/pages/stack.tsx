@@ -88,7 +88,11 @@ const Stack = () => {
           </Link>
           <div className="mt-4 w-full md:max-w-80 glass-panel-elevated p-4 rounded-2xl flex flex-col gap-2 lg:max-h-[32rem] overflow-auto">
             {selfRating.map((skill) => (
-              <div key={skill.name} className="flex justify-between items-center py-1 px-2 rounded-lg" style={{ color: 'var(--text-primary)' }}>
+              <div
+                key={skill.name}
+                className="flex justify-between items-center py-1 px-2 rounded-lg"
+                style={{ color: "var(--text-primary)" }}
+              >
                 <div className="font-medium text-sm">{skill.name}</div>
                 <div>
                   <StarRating rating={skill.rating} />
