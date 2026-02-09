@@ -55,12 +55,19 @@ const Home = () => {
       } col-span-1 md:flex flex-grow flex-col lg:justify-center items-center px-6 pt-9`}
     >
       <div className="lg:ml-24">
-        <div className="font-semibold text-amber-700 dark:text-amber-100 pt-6 transition duration-700">
+        <div
+          className="font-semibold pt-6"
+          style={{ color: 'var(--accent)' }}
+        >
           Hello <span className="inline-block scale-x-[-1]"> 👋</span>
         </div>
-        <div className="font-semibold text-3xl	mt-2">{`I'm ${profile.name}`}</div>
-        <div className=" pt-4 lg:pr-28">{profile.aboutMe}</div>
-        <div className="mt-8 flex gap-8">
+        <div className="font-semibold text-3xl mt-2" style={{ color: 'var(--text-primary)' }}>
+          {`I'm ${profile.name}`}
+        </div>
+        <div className="pt-4 lg:pr-28" style={{ color: 'var(--text-secondary)' }}>
+          {profile.aboutMe}
+        </div>
+        <div className="mt-8 flex gap-6">
           <a
             href="https://drive.google.com/file/d/1YTV9f75uCdowrB4N15zuh9RnRjbHfu4i/view?usp=sharing"
             target="_blank"
@@ -71,7 +78,7 @@ const Home = () => {
             <FontAwesomeIcon
               icon={theme === "dark" ? faSun : faMoon}
               size="lg"
-              className="rounded-full mr-2"
+              className="mr-2"
             />
             {theme === "dark" ? "Day Mode" : "Night Mode"}
           </button>

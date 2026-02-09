@@ -14,6 +14,14 @@ export default {
       spacing: {
         "2px": "2px",
       },
+      colors: {
+        accent: {
+          DEFAULT: 'var(--accent)',
+          subtle: 'var(--accent-subtle)',
+          hover: 'var(--accent-hover)',
+        },
+        base: 'var(--bg-base)',
+      },
       keyframes: {
         fadeIn: {
           from: { opacity: "0" },
@@ -21,7 +29,7 @@ export default {
         },
       },
       animation: {
-        fadeIn: "fadeIn 1.0s ease-out forwards",
+        fadeIn: "fadeIn 0.6s ease-out forwards",
       },
     },
   },

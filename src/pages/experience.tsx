@@ -80,34 +80,37 @@ const Experience = () => {
       />
       <div className="col-span-1 flex items-center px-6 py-9">
         <div className="flex-grow lg:pr-10 animate-fadeIn">
-          <Link className="text-amber-700 dark:text-amber-200" to="/">
+          <Link className="accent-link" to="/">
             <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
             Menu
           </Link>
-          {experiences.map((experience) => (
-            <Link
-              to={experience.href}
-              key={experience.id}
-              target="_blank"
-              className=" block group p-3 mt-2 hover:bg-zinc-200/50 dark:hover:bg-zinc-900/50 hover:cursor-pointer rounded-md"
-            >
-              <div className="md:flex md:items-center md:justify-between">
-                <div className="mt-1 font-semibold text-lg group-hover:text-amber-600 dark:group-hover:text-amber-200">
-                  {`${experience.roleName}, ${experience.companyName}`}
+          <div className="flex flex-col gap-3 mt-4">
+            {experiences.map((experience) => (
+              <Link
+                to={experience.href}
+                key={experience.id}
+                target="_blank"
+                className="block group glass-panel p-4 rounded-2xl hover:cursor-pointer"
+              >
+                <div className="md:flex md:items-center md:justify-between">
+                  <div className="font-semibold text-lg transition-colors duration-300" style={{ color: 'var(--text-primary)' }}>
+                    {`${experience.roleName}, ${experience.companyName}`}
+                  </div>
+                  <div className="md:text-right text-sm" style={{ color: 'var(--text-muted)' }}>
+                    {getDateValue(experience)}
+                    <FontAwesomeIcon
+                      icon={faArrowUpRightFromSquare}
+                      className="pl-2 transition-transform duration-150 group-hover:scale-110"
+                      style={{ color: 'var(--accent)' }}
+                    />
+                  </div>
                 </div>
-                <div className="md:text-right">
-                  {getDateValue(experience)}
-                  <FontAwesomeIcon
-                    icon={faArrowUpRightFromSquare}
-                    className="pl-2 transition-transform transform group-hover:scale-125 transition duration-300 group-hover:text-amber-600 dark:group-hover:text-amber-200"
-                  />
+                <div className="mt-1" style={{ color: 'var(--text-secondary)' }}>
+                  {experience.description}
                 </div>
-              </div>
-              <div className="text-neutral-600 group-hover:text-neutral-900  dark:text-neutral-400 dark:group-hover:text-neutral-200">
-                {experience.description}
-              </div>
-            </Link>
-          ))}
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </>

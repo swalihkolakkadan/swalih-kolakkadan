@@ -35,31 +35,31 @@ const Projects = () => {
         description="Explore my portfolio projects including web applications and e-commerce platforms built with React, TypeScript, and modern technologies."
         pathname="/projects"
       />
-      <div className="col-span-1 flex  lg:items-center px-6 py-9">
+      <div className="col-span-1 flex lg:items-center px-6 py-9">
         <div className="animate-fadeIn">
-          <Link className="text-amber-700 dark:text-amber-200" to="/">
+          <Link className="accent-link" to="/">
             <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
             Menu
           </Link>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-4 mt-4">
             {projects.map((project) => (
-              <div key={project.id} className="p-2">
-                <div className="mt-1 font-semibold text-lg">{project.name}</div>
-                <div id="skills" className="flex gap-2 mt-1">
+              <div key={project.id} className="glass-panel rounded-2xl p-4">
+                <div className="font-semibold text-lg" style={{ color: 'var(--text-primary)' }}>{project.name}</div>
+                <div className="flex flex-wrap gap-2 mt-2">
                   {project.skills.map((skill) => (
-                    <div className=" text-sm bg-zinc-200 dark:bg-zinc-900 py-1 px-3 rounded-full">
+                    <div key={skill} className="glass-pill text-xs py-1 px-3 rounded-full" style={{ color: 'var(--text-secondary)' }}>
                       {skill}
                     </div>
                   ))}
                 </div>
-                <div className="mt-1 text-neutral-600 dark:text-neutral-400">
+                <div className="mt-2" style={{ color: 'var(--text-secondary)' }}>
                   {project.description}
                 </div>
                 {project.links?.length && (
-                  <div id="link" className="flex gap-2 mt-1">
+                  <div className="flex gap-3 mt-3">
                     {project.links.map((link) => (
-                      <Link to={link.href} target="_blank">
-                        <FontAwesomeIcon icon={faExternalLink} /> {link.name}
+                      <Link key={link.name} to={link.href} target="_blank" className="accent-link text-sm font-medium">
+                        <FontAwesomeIcon icon={faExternalLink} className="mr-1" /> {link.name}
                       </Link>
                     ))}
                   </div>

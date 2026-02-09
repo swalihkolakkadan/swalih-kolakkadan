@@ -4,7 +4,10 @@ import React, {
   useLayoutEffect,
   useMemo,
   useRef,
+  useState,
 } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import { useRive, UseRiveParameters } from "@rive-app/react-webgl2";
 
 /**
@@ -41,9 +44,14 @@ const RivePlayer: React.FC<RivePlayerProps> = ({
   isListening = false,
   mouthValue,
 }) => {
+  const [isLoading, setIsLoading] = useState(true);
   const hasStartedRef = useRef(false);
   const lastMouthValueRef = useRef<number>(-1);
   const riveRef = useRef<any>(null);
+
+  useEffect(() => {
+    setIsLoading(true);
+  }, [src, artboard]);
 
   // ─── 1. Load Rive with autoplay ───────────────────────────────────────
   const riveParams: UseRiveParameters = useMemo(
@@ -62,6 +70,7 @@ const RivePlayer: React.FC<RivePlayerProps> = ({
             instance.play(anims[0]);
           }
         }
+        setIsLoading(false);
       },
     }),
     [src, artboard],
@@ -94,7 +103,10 @@ const RivePlayer: React.FC<RivePlayerProps> = ({
         console.log(`[RivePlayer] Fired trigger (path): ${triggerName}`);
       }
     } catch (err) {
-      console.warn(`[RivePlayer] Failed to fire trigger '${triggerName}':`, err);
+      console.warn(
+        `[RivePlayer] Failed to fire trigger '${triggerName}':`,
+        err,
+      );
     }
   }, []);
 
@@ -166,7 +178,20 @@ const RivePlayer: React.FC<RivePlayerProps> = ({
     }
   }, [rive, isListening, isPlaying, fireTrigger]);
 
-  return <RiveComponent className={className} />;
+  return (
+    <div className={`relative ${className || ""}`}>
+      <RiveComponent className="w-full h-full block" />
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <FontAwesomeIcon
+            icon={faCircleNotch}
+            spin
+            className="text-gray-400 text-3xl"
+          />
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default RivePlayer;

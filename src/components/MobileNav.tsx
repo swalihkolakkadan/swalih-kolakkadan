@@ -22,7 +22,7 @@ const MobileNav = () => {
 
   return (
     <nav
-      className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-neutral-200/95 dark:bg-neutral-900/95 backdrop-blur-md border-t border-neutral-300 dark:border-neutral-700 safe-area-bottom"
+      className="lg:hidden fixed bottom-0 left-0 right-0 z-40 glass-nav safe-area-bottom"
       role="navigation"
       aria-label="Mobile navigation"
     >
@@ -37,26 +37,25 @@ const MobileNav = () => {
             <NavLink
               key={item.to}
               to={item.to}
-              className="relative flex flex-col items-center justify-center min-w-[56px] min-h-[44px] p-2 rounded-lg transition-all duration-300"
+              className="relative flex flex-col items-center justify-center min-w-[56px] min-h-[44px] p-2 rounded-xl"
               aria-label={item.label}
             >
               {isActive && (
-                <div className="absolute inset-0 bg-amber-100 dark:bg-amber-900/30 rounded-lg transition-all duration-300 animate-fadeIn" />
+                <div
+                  className="absolute inset-0 rounded-xl"
+                  style={{ background: 'var(--accent-subtle)' }}
+                />
               )}
               <FontAwesomeIcon
                 icon={item.icon}
-                className={`relative z-10 text-lg transition-colors duration-300 ${
-                  isActive
-                    ? "text-amber-600 dark:text-amber-400"
-                    : "text-neutral-600 dark:text-neutral-400"
-                }`}
+                className="relative z-10 text-lg"
+                style={{ color: isActive ? 'var(--accent)' : 'var(--text-muted)' }}
               />
               <span
-                className={`relative z-10 text-xs mt-1 transition-colors duration-300 ${
-                  isActive
-                    ? "text-amber-600 dark:text-amber-400 font-medium"
-                    : "text-neutral-500 dark:text-neutral-500"
+                className={`relative z-10 text-xs mt-1 ${
+                  isActive ? "font-medium" : ""
                 }`}
+                style={{ color: isActive ? 'var(--accent)' : 'var(--text-muted)' }}
               >
                 {item.label}
               </span>

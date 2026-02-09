@@ -13,7 +13,7 @@ const Card = ({ title, subtitle }: ContactCard) => {
 
   return (
     <div
-      className="group bg-neutral-200 dark:bg-neutral-900/50 p-4 rounded-2xl shadow-sm dark:shadow-neutral-700/50 flex hover:cursor-pointer hover:shadow-md"
+      className="group glass-panel p-4 rounded-2xl flex hover:cursor-pointer"
       onClick={() => {
         navigator.clipboard.writeText(subtitle);
         setIsCopied(true);
@@ -23,23 +23,22 @@ const Card = ({ title, subtitle }: ContactCard) => {
       }}
     >
       <div>
-        <div className="text-xs text-neutral-600 dark:text-neutral-400">
+        <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
           {title}
         </div>
         <div
-          className={`text-md ${
-            isCopied ? "text-amber-700 dark:text-amber-300" : ""
-          }`}
+          className="text-md"
+          style={{ color: isCopied ? 'var(--accent)' : 'var(--text-primary)' }}
         >
           {subtitle}
         </div>
       </div>
-      <div className="ml-auto flex items-center opacity-0 group-hover:opacity-100 transition duration-300 active:text-sky-400 transition duration-300">
+      <div className="ml-auto flex items-center opacity-0 group-hover:opacity-100 transition duration-300">
         <FontAwesomeIcon
           icon={isCopied ? faClipboardCheck : faCopy}
           size="lg"
           title="Copy"
-          className={` ${isCopied ? "text-amber-700 dark:text-amber-300" : ""}`}
+          style={{ color: isCopied ? 'var(--accent)' : undefined }}
         />
       </div>
     </div>

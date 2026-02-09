@@ -82,14 +82,14 @@ const Stack = () => {
       />
       <div className="col-span-1 flex lg:items-center px-6 py-9">
         <div className="flex-grow lg:pr-10 animate-fadeIn">
-          <Link className="text-amber-700 dark:text-amber-200" to="/">
+          <Link className="accent-link" to="/">
             <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
             Menu
           </Link>
-          <div className="mt-2 w-full md:max-w-80 bg-neutral-200 dark:bg-neutral-900/75 p-4 rounded-lg shadow-sm dark:shadow-neutral-700/50 flex flex-col gap-2 lg:max-h-[32rem] overflow-auto">
+          <div className="mt-4 w-full md:max-w-80 glass-panel-elevated p-4 rounded-2xl flex flex-col gap-2 lg:max-h-[32rem] overflow-auto">
             {selfRating.map((skill) => (
-              <div className="flex justify-between">
-                <div> {skill.name} </div>
+              <div key={skill.name} className="flex justify-between items-center py-1 px-2 rounded-lg" style={{ color: 'var(--text-primary)' }}>
+                <div className="font-medium text-sm">{skill.name}</div>
                 <div>
                   <StarRating rating={skill.rating} />
                 </div>

@@ -7,25 +7,34 @@ import {
 import React from "react";
 
 const Footer = () => {
-  const iConClass =
-    "p-2.5 bg-zinc-200 dark:bg-zinc-900 backdrop-blur-md rounded-full hover:text-amber-500";
+  const iconClass = "p-2.5 glass-pill rounded-full";
+  const linkClass = "transition-transform duration-150 hover:-translate-y-1";
 
   return (
     <footer className="py-6 flex items-center justify-center space-x-4">
       <a
         href="https://www.linkedin.com/in/swalih-kolakkadan-071611177/"
         target="_blank"
+        className={linkClass}
+        style={{ color: 'var(--text-secondary)' }}
       >
-        <FontAwesomeIcon icon={faLinkedinIn} className={iConClass} />
+        <FontAwesomeIcon icon={faLinkedinIn} className={iconClass} />
       </a>
-      <a href="https://github.com/swalihkolakkadan" target="_blank">
-        <FontAwesomeIcon icon={faGithub} className={iConClass} />
+      <a
+        href="https://github.com/swalihkolakkadan"
+        target="_blank"
+        className={linkClass}
+        style={{ color: 'var(--text-secondary)' }}
+      >
+        <FontAwesomeIcon icon={faGithub} className={iconClass} />
       </a>
       <a
         href="https://www.instagram.com/swalih_k/?igsh=c2FyMTZpbGV6Nnkw&utm_source=qr"
         target="_blank"
+        className={linkClass}
+        style={{ color: 'var(--text-secondary)' }}
       >
-        <FontAwesomeIcon icon={faInstagram} className={iConClass} />
+        <FontAwesomeIcon icon={faInstagram} className={iconClass} />
       </a>
     </footer>
   );

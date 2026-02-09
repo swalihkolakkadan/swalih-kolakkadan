@@ -14,7 +14,7 @@ const StarRating = ({ rating = 0, totalStars = 5 }) => {
         return (
           <FontAwesomeIcon
             key={index}
-            className="text-amber-700 dark:text-amber-300"
+            style={{ marginRight: 5, color: 'var(--accent)' }}
             icon={
               starValue <= rating
                 ? fasStar
@@ -22,7 +22,6 @@ const StarRating = ({ rating = 0, totalStars = 5 }) => {
                 ? fasStarHalf
                 : farStar
             }
-            style={{ marginRight: 5 }}
           />
         );
       })}

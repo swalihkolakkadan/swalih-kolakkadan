@@ -54,14 +54,15 @@ const ContactForm = () => {
   };
 
   const inputClasses =
-    "w-full px-4 py-3 rounded-lg bg-neutral-100 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 focus:border-amber-500 dark:focus:border-amber-500 focus:outline-none transition-colors";
+    "w-full px-4 py-3 rounded-xl glass-input";
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <label
           htmlFor="name"
-          className="block text-sm font-medium mb-1 text-neutral-700 dark:text-neutral-300"
+          className="block text-sm font-medium mb-1"
+          style={{ color: 'var(--text-secondary)' }}
         >
           Name
         </label>
@@ -74,13 +75,15 @@ const ContactForm = () => {
           required
           className={inputClasses}
           placeholder="Your name"
+          style={{ color: 'var(--text-primary)' }}
         />
       </div>
 
       <div>
         <label
           htmlFor="email"
-          className="block text-sm font-medium mb-1 text-neutral-700 dark:text-neutral-300"
+          className="block text-sm font-medium mb-1"
+          style={{ color: 'var(--text-secondary)' }}
         >
           Email
         </label>
@@ -93,13 +96,15 @@ const ContactForm = () => {
           required
           className={inputClasses}
           placeholder="your@email.com"
+          style={{ color: 'var(--text-primary)' }}
         />
       </div>
 
       <div>
         <label
           htmlFor="message"
-          className="block text-sm font-medium mb-1 text-neutral-700 dark:text-neutral-300"
+          className="block text-sm font-medium mb-1"
+          style={{ color: 'var(--text-secondary)' }}
         >
           Message
         </label>
@@ -112,13 +117,15 @@ const ContactForm = () => {
           rows={4}
           className={`${inputClasses} resize-none`}
           placeholder="Your message..."
+          style={{ color: 'var(--text-primary)' }}
         />
       </div>
 
       <button
         type="submit"
         disabled={status === "loading"}
-        className="w-full py-3 px-4 bg-amber-600 hover:bg-amber-700 disabled:bg-amber-400 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
+        className="w-full py-3 px-4 glass-button font-medium rounded-xl flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        style={{ color: 'var(--accent)' }}
       >
         {status === "loading" ? (
           <>
@@ -135,8 +142,9 @@ const ContactForm = () => {
 
       {status === "success" && (
         <div
-          className="p-3 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 text-center"
+          className="p-3 rounded-xl glass-panel text-center"
           role="alert"
+          style={{ color: '#22c55e', borderColor: 'rgba(34, 197, 94, 0.3)' }}
         >
           Message sent successfully! I'll get back to you soon.
         </div>
@@ -144,8 +152,9 @@ const ContactForm = () => {
 
       {status === "error" && (
         <div
-          className="p-3 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-center"
+          className="p-3 rounded-xl glass-panel text-center"
           role="alert"
+          style={{ color: '#ef4444', borderColor: 'rgba(239, 68, 68, 0.3)' }}
         >
           Something went wrong. Please try again or email me directly.
         </div>
