@@ -162,10 +162,47 @@ const ChatWidget: React.FC = () => {
 
   return (
     <>
-      {/* Speech Bubble — to the left of the avatar */}
+      {/* Floating History Stack — Appears above avatar when history is open */}
       <div
-        className={`chat-bubble-arrow fixed bottom-[180px] md:bottom-[80px] right-4 left-4 md:left-auto md:right-[calc(1.5rem+220px+1rem)] w-auto max-w-[360px] md:w-max mx-auto md:mx-0 min-w-[100px] p-3.5 pr-6 rounded-2xl rounded-br-sm bg-white/95 dark:bg-neutral-800/95 text-neutral-900 dark:text-neutral-200 shadow-xl backdrop-blur-2xl z-[999] transition-all duration-[400ms] ${
-          bubbleVisible
+        className={`fixed bottom-[180px] md:bottom-[100px] right-4 md:right-6 w-full max-w-[360px] max-h-[60vh] flex flex-col justify-end pointer-events-none z-[998] transition-all duration-300 ${
+          isHistoryOpen
+            ? "opacity-100 translate-y-0 pointer-events-auto"
+            : "opacity-0 translate-y-4 pointer-events-none"
+        }`}
+      >
+        <div
+          className="flex flex-col gap-2 overflow-y-auto p-4 chat-scrollbar bg-white/50 dark:bg-black/50 backdrop-blur-md rounded-2xl shadow-lg border border-white/20 dark:border-white/10"
+          style={{ maxHeight: "100%" }}
+        >
+          <div className="flex justify-between items-center mb-2 px-1">
+            <span className="text-xs font-medium text-neutral-500 dark:text-neutral-400">
+              Chat History
+            </span>
+            <button
+              onClick={() => setIsHistoryOpen(false)}
+              className="w-5 h-5 rounded-full bg-neutral-200 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-400 flex items-center justify-center text-[0.6rem] hover:bg-neutral-300 dark:hover:bg-neutral-600 transition-colors"
+            >
+              <FontAwesomeIcon icon={faTimes} />
+            </button>
+          </div>
+
+          {messages.length === 0 ? (
+            <div className="flex flex-col items-center justify-center p-4 text-neutral-400 dark:text-neutral-500 text-center text-sm">
+              <p>No messages yet</p>
+            </div>
+          ) : (
+            messages.map((message) => (
+              <ChatMessage key={message.id} message={message} />
+            ))
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+      </div>
+
+      {/* Floating "Latest Response" Bubble — Only visible if history is CLOSED */}
+      <div
+        className={`chat-bubble-arrow fixed bottom-[180px] md:bottom-[80px] right-4 left-4 md:left-auto md:right-[calc(1.5rem+220px+1rem)] w-auto max-w-[360px] md:w-max mx-auto md:mx-0 min-w-[100px] p-3.5 pr-6 rounded-2xl rounded-br-sm bg-[#E9E9EB] dark:bg-[#262626]/95 text-black dark:text-white shadow-xl backdrop-blur-2xl z-[999] transition-all duration-[400ms] ${
+          bubbleVisible && !isHistoryOpen
             ? "opacity-100 translate-x-0 pointer-events-auto"
             : "opacity-0 translate-x-3 pointer-events-none"
         }`}
@@ -340,59 +377,18 @@ const ChatWidget: React.FC = () => {
                 placeholder="Message..."
                 disabled={isLoading}
                 autoFocus
-                className="w-[100px] md:w-[140px] px-3 py-1.5 rounded-full border border-black/10 dark:border-white/10 bg-white/95 dark:bg-neutral-800/95 text-neutral-900 dark:text-neutral-200 text-xs font-[inherit] outline-none backdrop-blur-sm shadow-lg transition-all duration-200 placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:border-amber-600 dark:focus:border-amber-400"
+                className="w-[100px] md:w-[140px] px-3 py-1.5 rounded-full border border-black/10 dark:border-white/10 bg-white/95 dark:bg-neutral-800/95 text-neutral-900 dark:text-neutral-200 text-xs font-[inherit] outline-none backdrop-blur-sm shadow-lg transition-all duration-200 placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:border-[#007AFF] dark:focus:border-[#0A84FF]"
               />
               <button
                 type="submit"
                 disabled={isLoading || !inputValue.trim()}
-                className="w-6 h-6 md:w-7 md:h-7 min-w-[24px] md:min-w-[28px] rounded-full border-none cursor-pointer flex items-center justify-center text-xs bg-gradient-to-br from-amber-600 to-amber-700 dark:from-amber-400 dark:to-amber-500 text-white dark:text-slate-900 shadow-lg transition-all duration-200 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-6 h-6 md:w-7 md:h-7 min-w-[24px] md:min-w-[28px] rounded-full border-none cursor-pointer flex items-center justify-center text-xs bg-gradient-to-br from-[#007AFF] to-[#005EC4] dark:from-[#0A84FF] dark:to-[#007AFF] text-white shadow-lg transition-all duration-200 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
                 aria-label="Send message"
               >
                 <FontAwesomeIcon icon={faPaperPlane} />
               </button>
             </form>
           )}
-        </div>
-      </div>
-
-      {/* History Backdrop */}
-      {isHistoryOpen && (
-        <div
-          className="fixed inset-0 bg-black/25 dark:bg-black/45 backdrop-blur-[2px] z-[1001] chat-fade-in"
-          onClick={() => setIsHistoryOpen(false)}
-        />
-      )}
-
-      {/* History Panel */}
-      <div
-        className={`fixed top-0 right-0 w-[360px] max-w-full h-screen bg-white/[0.98] dark:bg-neutral-900/[0.98] backdrop-blur-xl shadow-[-4px_0_24px_rgba(0,0,0,0.08)] dark:shadow-[-4px_0_24px_rgba(0,0,0,0.3)] flex flex-col z-[1002] transition-transform duration-[350ms] ease-[cubic-bezier(0.4,0,0.2,1)] ${
-          isHistoryOpen ? "translate-x-0" : "translate-x-full"
-        }`}
-      >
-        <div className="flex items-center justify-between px-4 py-5 border-b border-black/[0.06] dark:border-white/[0.06]">
-          <h3 className="text-base font-semibold text-neutral-900 dark:text-neutral-200 m-0">
-            Conversation
-          </h3>
-          <button
-            onClick={() => setIsHistoryOpen(false)}
-            className="w-[34px] h-[34px] rounded-full border-none cursor-pointer flex items-center justify-center text-sm bg-black/[0.04] dark:bg-white/[0.06] text-neutral-600 dark:text-neutral-400 hover:bg-black/[0.08] dark:hover:bg-white/[0.12] transition-colors"
-            aria-label="Close history"
-          >
-            <FontAwesomeIcon icon={faTimes} />
-          </button>
-        </div>
-        <div className="flex-1 overflow-y-auto p-4 chat-scrollbar">
-          {messages.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-[200px] text-neutral-400 dark:text-neutral-500 text-center">
-              <p className="text-sm font-medium">No messages yet</p>
-              <p className="text-sm mt-1">Start a conversation!</p>
-            </div>
-          ) : (
-            messages.map((message) => (
-              <ChatMessage key={message.id} message={message} />
-            ))
-          )}
-          <div ref={messagesEndRef} />
         </div>
       </div>
 
