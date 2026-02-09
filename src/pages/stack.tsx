@@ -32,6 +32,14 @@ const Stack = () => {
       rating: 4,
     },
     {
+      name: "Python",
+      rating: 3.5,
+    },
+    {
+      name: "FastAPI",
+      rating: 3.5,
+    },
+    {
       name: "Angular",
       rating: 3.5,
     },
@@ -45,16 +53,20 @@ const Stack = () => {
     },
     { name: "Redux", rating: 3.5 },
     {
+      name: "LangChain",
+      rating: 3,
+    },
+    {
+      name: "VectorDB",
+      rating: 3,
+    },
+    {
       name: "C",
       rating: 3,
     },
     { name: "Tailwind", rating: 3 },
     {
       name: "RXJS",
-      rating: 3,
-    },
-    {
-      name: "Python",
       rating: 3,
     },
     { name: "SQL", rating: 2 },
